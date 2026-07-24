@@ -273,38 +273,37 @@
         </div>
       </div>
 
-      <!-- LIVE POLL COLLECTION CARD -->
+      <!-- LIVE POLL COLLECTION CARD WITH CLICKABLE BUTTON & SCANNABLE QR CODE -->
       <div class="glass-card p-5 rounded-xl border border-violet-500/30">
         <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
-          <div>
+          <div class="flex-grow">
             <span class="badge-live text-xs font-mono uppercase text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30 font-semibold">● Pesquisa de Campo ao Vivo</span>
             <h3 class="text-base font-bold text-slate-100 mt-1">Coleta de Dados da Turma</h3>
-            <p class="text-xs text-slate-400">Responda ao formulário no celular para gerarmos o gráfico da sala ao vivo!</p>
+            <p class="text-xs text-slate-400 mb-3">Responda ao formulário no celular para gerarmos o gráfico da sala ao vivo!</p>
+
+            <!-- DIRECT CLICKABLE BUTTON FOR STUDENTS -->
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfoBYJ16THQS-AINisLG3F7_Tjv8VNPYO-t9LQRhgtm5WelFA/viewform?usp=dialog" 
+               target="_blank" 
+               rel="noopener noreferrer" 
+               class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold text-xs transition-all shadow-lg hover:shadow-emerald-500/20 hover:scale-[1.02] transform">
+              <span>📝</span>
+              <span>Clique Aqui para Responder ao Formulário</span>
+              <span>↗</span>
+            </a>
           </div>
 
+          <!-- SCANNABLE QR CODE FOR DATASHOW PROJECTION -->
           <div class="p-3 bg-white rounded-lg flex flex-col items-center shrink-0 shadow-md">
-            <svg class="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="100" height="100" fill="white"/>
-              <rect x="10" y="10" width="25" height="25" fill="#0F172A"/>
-              <rect x="15" y="15" width="15" height="15" fill="white"/>
-              <rect x="18" y="18" width="9" height="9" fill="#0F172A"/>
-              <rect x="65" y="10" width="25" height="25" fill="#0F172A"/>
-              <rect x="70" y="15" width="15" height="15" fill="white"/>
-              <rect x="73" y="18" width="9" height="9" fill="#0F172A"/>
-              <rect x="10" y="65" width="25" height="25" fill="#0F172A"/>
-              <rect x="15" y="70" width="15" height="15" fill="white"/>
-              <rect x="18" y="73" width="9" height="9" fill="#0F172A"/>
-              <rect x="45" y="15" width="10" height="10" fill="#0F172A"/>
-              <rect x="45" y="45" width="15" height="15" fill="#0F172A"/>
-              <rect x="65" y="65" width="20" height="20" fill="#0F172A"/>
-            </svg>
-            <span class="text-[10px] font-mono text-slate-900 font-bold mt-1">Escaneie o QR Code</span>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=https%3A%2F%2Fdocs.google.com%2Fforms%2Fd%2Fe%2F1FAIpQLSfoBYJ16THQS-AINisLG3F7_Tjv8VNPYO-t9LQRhgtm5WelFA%2Fviewform%3Fusp%3Ddialog" 
+                 alt="QR Code do Formulário Google" 
+                 class="w-28 h-28 object-contain">
+            <span class="text-[10px] font-mono text-slate-900 font-bold mt-1.5">Escaneie no Celular</span>
           </div>
         </div>
 
-        <div class="flex flex-wrap gap-2 mb-4">
+        <div class="flex flex-wrap gap-2 mb-4 pt-3 border-t border-slate-800">
           <button id="fetch-live-data-btn" class="px-3.5 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-md transition-all flex items-center gap-1.5">
-            🔄 Baixar Respostas (Google Sheets)
+            🔄 Baixar Respostas da Sala (Google Sheets)
           </button>
           <button id="load-sample-data-btn" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition-all">
             📊 Carregar Dados Exemplo (IBGE)

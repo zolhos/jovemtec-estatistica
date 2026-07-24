@@ -1,7 +1,7 @@
 /* Interactive Charts & Live Data Processing - Prof. Diego Gonçalves (z.olhos) */
 
-// Global Apps Script URL - Replace with the URL generated in Google Apps Script Deploy
-const APPS_SCRIPT_URL = "COLE_SUA_URL_DO_APPS_SCRIPT_AQUI";
+// Global Apps Script URL - Configured with real WebApp URL
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzf0jKrq6oZv_i7qngw8mwN9U6mSYcB1WdOYGhmFYcr_zKW265ZIWKM6SgUGWWCoyBX/exec";
 
 // Fallback IBGE / Sample Data for Class Poll
 const fallbackPollData = {
@@ -48,7 +48,7 @@ async function fetchLiveDataFromAppsScript() {
   if (statusEl) statusEl.textContent = '⏳ Baixando dados da sala...';
 
   try {
-    if (APPS_SCRIPT_URL === "COLE_SUA_URL_DO_APPS_SCRIPT_AQUI" || !APPS_SCRIPT_URL.startsWith("http")) {
+    if (!APPS_SCRIPT_URL || !APPS_SCRIPT_URL.startsWith("http")) {
       if (statusEl) statusEl.textContent = 'ℹ️ Usando dados de exemplo (URL do Apps Script não configurada).';
       renderLiveChart(fallbackPollData.deslocamento);
       return;
@@ -65,13 +65,13 @@ async function fetchLiveDataFromAppsScript() {
 
     if (times.length > 0) {
       renderLiveChart(times);
-      if (statusEl) statusEl.textContent = `✅ ${times.length} respostas coletadas da sala!`;
+      if (statusEl) statusEl.textContent = `✅ ${times.length} respostas coletadas da sala ao vivo!`;
     } else {
-      if (statusEl) statusEl.textContent = '⚠️ Nenhuma resposta numérica encontrada. Exibindo dados pré-carregados.';
+      if (statusEl) statusEl.textContent = '⚠️ Nenhuma resposta numérica encontrada na planilha. Exibindo dados pré-carregados.';
       renderLiveChart(fallbackPollData.deslocamento);
     }
   } catch (err) {
-    if (statusEl) statusEl.textContent = '⚠️ Falha na conexão. Exibindo dados de demonstração.';
+    if (statusEl) statusEl.textContent = '⚠️ Falha na conexão com a planilha. Exibindo dados de demonstração.';
     renderLiveChart(fallbackPollData.deslocamento);
   }
 }
@@ -179,7 +179,7 @@ function renderOutlierChart(mean, median, richSalary) {
   });
 }
 
-/* 3. Equity Allocation & Standard Deviation Simulator (Bloco 3) - FIXED BUG IN SLIDER LABELS */
+/* 3. Equity Allocation & Standard Deviation Simulator (Bloco 3) */
 function initEquitySimulator() {
   const sliders = [
     document.getElementById('fund-bairro-a'),
@@ -317,7 +317,6 @@ function initMedianSimulator() {
 
     const rawListHtml = nums.map(n => `<span class="px-2 py-1 bg-slate-800 rounded border border-slate-700">${n}</span>`).join(' ');
     
-    // Create Rol (Sorted)
     const sorted = [...nums].sort((a, b) => a - b);
     const n = sorted.length;
     const isOdd = n % 2 !== 0;
@@ -387,7 +386,6 @@ function initModeSimulator() {
     carroEl.textContent = modeData["Carro"];
     bikeEl.textContent = modeData["Bicicleta"];
 
-    // Find max frequency
     const maxFreq = Math.max(...Object.values(modeData));
     const modes = Object.keys(modeData).filter(key => modeData[key] === maxFreq && maxFreq > 0);
 
