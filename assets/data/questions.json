@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "source": "COTUCA 2019 (Adaptada)",
+    "topic": "Desvio Absoluto em Relação à Média",
+    "question": "O quadro a seguir apresenta o número de candidatos inscritos no processo seletivo do COTUCA ao longo de cinco anos consecutivos:\n\n• 2014: 6.331 inscritos\n• 2015: 5.151 inscritos\n• 2016: 5.925 inscritos\n• 2017: 5.557 inscritos\n• 2018: 5.878 inscritos\n\nA partir do cálculo da média aritmética do número de candidatos nesses cinco anos, determine em qual ano o número de candidatos se distanciou mais dessa média.",
+    "options": [
+      { "key": "a", "text": "2014" },
+      { "key": "b", "text": "2015" },
+      { "key": "c", "text": "2016" },
+      { "key": "d", "text": "2017" },
+      { "key": "e", "text": "2018" }
+    ],
+    "correctKey": "b",
+    "explanation": "1. Cálculo da Média Aritmética:\n   $$\\bar{x} = \\frac{6331 + 5151 + 5925 + 5557 + 5878}{5} = \\frac{28842}{5} = 5768,4$$\n\n2. Distância (Desvio Absoluto |x_i - x̄|):\n   • 2014: |6331 - 5768,4| = 562,6\n   • 2015: |5151 - 5768,4| = |-617,4| = 617,4 (Maior distanciamento!)\n   • 2016: |5925 - 5768,4| = 156,6\n   • 2017: |5557 - 5768,4| = 211,4\n   • 2018: |5878 - 5768,4| = 109,6\n\nConclusão Sociomatemática: O desvio em relação à média é o conceito precursor do Desvio Padrão. Em 2015 ocorreu a maior queda atípica de inscritos."
+  },
+  {
+    "id": 2,
+    "source": "COTUCA 2024",
+    "topic": "Média Aritmética e Sistemas de Equações",
+    "question": "A média aritmética das idades de Artur e Bruno é 34 anos. Há 7 anos, a idade de Artur era o dobro da idade de Bruno. A idade atual de Bruno é:",
+    "options": [
+      { "key": "a", "text": "19 anos" },
+      { "key": "b", "text": "25 anos" },
+      { "key": "c", "text": "34 anos" },
+      { "key": "d", "text": "43 anos" }
+    ],
+    "correctKey": "b",
+    "explanation": "1. Pela média atual: (A + B) / 2 = 34 => A + B = 68 (Equação 1)\n2. Há 7 anos: (A - 7) = 2(B - 7) => A - 2B = -7 (Equação 2)\n3. Subtraindo as duas equações: (A + B) - (A - 2B) = 68 - (-7) => 3B = 75 => B = 25 anos.\n\nArtur tem 43 anos e Bruno tem 25 anos."
+  },
+  {
+    "id": 3,
+    "source": "COTUCA 2025",
+    "topic": "Análise de Indicadores Sociais e Proporção",
+    "question": "Em um estudo sobre vulnerabilidade social no Brasil baseado em dados do UNICEF divulgados na prova do COTUCA, constatou-se que 64,1% das crianças e dos adolescentes em situação de trabalho infantil são negros.\n\nEm um município monitorado por pesquisa amostral, identificou-se um total de 1.500 crianças e adolescentes em situação de trabalho infantil. Mantida a proporção do indicador nacional, o número de jovens negros nessa condição é aproximadamente:",
+    "options": [
+      { "key": "a", "text": "825" },
+      { "key": "b", "text": "962" },
+      { "key": "c", "text": "1.252" },
+      { "key": "d", "text": "1.350" }
+    ],
+    "correctKey": "b",
+    "explanation": "Cálculo: Total = 1500 * (64,1 / 100) = 1500 * 0,641 = 961,5.\nComo a variável 'número de pessoas' é Quantitativa Discreta, arredonda-se para o inteiro mais próximo: 962.\n\nReflexão Sociológica: Evidencia como dados quantitativos expõem desigualdades raciais estruturais em políticas públicas de proteção à infância."
+  },
+  {
+    "id": 4,
+    "source": "COTUCA 2024",
+    "topic": "Censo Demográfico e Razões Censitárias",
+    "question": "Segundo dados do Censo Demográfico do IBGE apresentados no COTUCA, as 305 etnias indígenas brasileiras mantêm vivos 274 idiomas no país.\n\nConsidere dois territórios amostrais A e B estudados pelo IBGE:\n• Território A: 120 etnias registradas e 110 idiomas vivos.\n• Território B: 185 etnias registradas e 164 idiomas vivos.\n\nAnalisando a razão entre o número de idiomas vivos e o número de etnias em cada território, assinale a alternativa correta:",
+    "options": [
+      { "key": "a", "text": "O Território A apresenta uma razão de preservação linguística por etnia aproximadamente igual a 0,917, a qual é superior à razão do Território B." },
+      { "key": "b", "text": "A razão de preservação linguística por etnia no Território B é exatamente igual a 0,950." },
+      { "key": "c", "text": "A média de idiomas por etnia considerando a totalidade do Censo do IBGE no país supera 1,0." },
+      { "key": "d", "text": "A variável 'idioma falado' é classificada como quantitativa contínua." }
+    ],
+    "correctKey": "a",
+    "explanation": "1. Razão do Território A: 110 / 120 ≈ 0,9166... ≈ 0,917.\n2. Razão do Território B: 164 / 185 ≈ 0,886.\nComo 0,917 > 0,886, a razão do Território A é superior à do Território B.\n\nClassificação da Variável: 'Idioma' é uma variável Qualitativa Nominal (categoria sem hierarquia matemática)."
+  },
+  {
+    "id": 5,
+    "source": "COTUCA 2016 (Adaptada)",
+    "topic": "Análise Percentual e Complementaridade",
+    "question": "Dos 6.000 candidatos que realizaram a prova de seleção em determinado ano, 2.500 acertaram o conjunto de questões sobre análise de dados e estatística. A taxa percentual dos candidatos que NÃO acertaram esse conjunto de questões é de:",
+    "options": [
+      { "key": "a", "text": "41,67%" },
+      { "key": "b", "text": "58,33%" },
+      { "key": "c", "text": "60,00%" },
+      { "key": "d", "text": "72,50%" },
+      { "key": "e", "text": "83,33%" }
+    ],
+    "correctKey": "b",
+    "explanation": "1. Número de candidatos que NÃO acertaram: 6000 - 2500 = 3500 candidatos.\n2. Taxa percentual: 3500 / 6000 = 35 / 60 = 7 / 12 ≈ 0,58333... => 58,33%.\n\nNota: Conversão de frações em dízimas periódicas percentuais é uma cobrança tradicional da banca do COTUCA."
+  }
+]

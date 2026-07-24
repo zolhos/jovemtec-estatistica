@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Estatística — Cursinho Pré-Vestibulinho | Prof. Diego Gonçalves</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- KaTeX for zero-jank fast math rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+          onload="renderMathInElement(document.body);"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-violet-500 selection:text-white">
+
+  <!-- TOP HEADER / NAVBAR -->
+  <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-emerald-400 flex items-center justify-center font-bold text-slate-950 text-lg shadow-lg">
+          ∑
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-50 tracking-tight flex items-center gap-2">
+            Estatística
+            <span class="text-xs px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30 font-normal">Pré-Vestibulinho</span>
+          </h1>
+          <p class="text-xs text-slate-400">Prof. Diego Gonçalves (<span class="text-emerald-400 font-mono">z.olhos</span>)</p>
+        </div>
+      </div>
+
+      <!-- VIEW MODE SWITCHER & NAVIGATION CONTROLS -->
+      <div class="flex items-center gap-2">
+        <button id="toggle-mode-btn" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition-all flex items-center gap-1.5 shadow-sm">
+          <span id="current-mode-label">📱 Mobile</span>
+          <span class="text-slate-500">|</span>
+          <span class="text-violet-400">Alternar View</span>
+        </button>
+
+        <div class="datashow-controls hidden md:flex items-center gap-1 bg-slate-800/80 p-1 rounded-lg border border-slate-700">
+          <button id="prev-slide-btn" class="px-2.5 py-1 rounded bg-slate-700 hover:bg-slate-600 text-xs font-bold text-slate-200 transition-all">◀ Ant</button>
+          <span class="text-xs font-mono px-2 text-violet-300"><span id="current-block-num">1</span>/5</span>
+          <button id="next-slide-btn" class="px-2.5 py-1 rounded bg-violet-600 hover:bg-violet-500 text-xs font-bold text-white transition-all">Próx ▶</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- QUICK JUMP BLOCK TABS -->
+    <nav class="max-w-6xl mx-auto mt-2 pt-2 border-t border-slate-800/60 overflow-x-auto flex items-center gap-1.5 scrollbar-none">
+      <button data-block="1" class="block-tab-btn px-3 py-1 rounded-md text-xs font-medium bg-violet-600 text-white transition-all whitespace-nowrap">B1: Diagnóstico Social</button>
+      <button data-block="2" class="block-tab-btn px-3 py-1 rounded-md text-xs font-medium bg-slate-800 text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap">B2: Tendência Central</button>
+      <button data-block="3" class="block-tab-btn px-3 py-1 rounded-md text-xs font-medium bg-slate-800 text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap">B3: Dispersão (σ)</button>
+      <button data-block="4" class="block-tab-btn px-3 py-1 rounded-md text-xs font-medium bg-slate-800 text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap">B4: Oficina COTUCA</button>
+      <button data-block="5" class="block-tab-btn px-3 py-1 rounded-md text-xs font-medium bg-slate-800 text-slate-400 hover:text-slate-200 transition-all whitespace-nowrap">B5: Encerramento</button>
+    </nav>
+  </header>
+
+  <!-- MAIN CONTENT CONTAINER -->
+  <main class="flex-grow max-w-4xl mx-auto w-full p-4 space-y-8">
+
+    <!-- ==================== BLOCO 1 ==================== -->
+    <section class="slide-block active" data-block-id="1">
+      <header class="mb-5">
+        <span class="text-xs font-mono uppercase tracking-widest text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-full border border-violet-500/20 font-semibold">Bloco 1 • 25 minutos</span>
+        <h2 class="text-2xl font-bold text-emerald-400 mt-2">O Diagnóstico Social e a Tipologia dos Dados</h2>
+        <p class="text-sm text-slate-400">Como a estatística descritiva e inferencial orienta as políticas públicas baseadas em evidências.</p>
+      </header>
+
+      <!-- PROVOCAÇÃO INICIAL -->
+      <div class="glass-card p-4 rounded-xl border-l-4 border-emerald-400 mb-6 teacher-speech">
+        <span class="text-xs font-mono uppercase text-emerald-400 font-bold tracking-wide">💡 Provocação Inicial:</span>
+        <blockquote class="text-sm text-slate-200 italic mt-1 leading-relaxed">
+          "Pessoal, antes de pegar no lápis, olhem para essa pergunta: <strong>O Estado brasileiro enxerga você?</strong><br>
+          Quando o Ministério da Saúde decide onde construir um posto de atendimento infantil ou quando o Ministério da Educação aloca recursos para o COTUCA ou Institutos Federais, ele não faz por intuição. Ele faz lendo <strong>Estatística</strong>. Se a estatística for mal desenhada, bairros inteiros se tornam invisíveis para o orçamento público. A estatística é a ferramenta primária de garantia de direitos cidadãos."
+        </blockquote>
+      </div>
+
+      <!-- DESCRITIVA VS INFERENCIAL -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="glass-card p-4 rounded-xl border border-slate-700/60">
+          <h3 class="text-sm font-bold text-violet-400 mb-1.5 flex items-center gap-2">📊 Estatística Descritiva</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            É a fotografia censitária completa. O <strong>Censo Demográfico do IBGE</strong> visita cerca de 75 milhões de domicílios no Brasil. Ele não estima nem chuta: ele <em>descreve</em> a população recenseada.
+          </p>
+        </div>
+        <div class="glass-card p-4 rounded-xl border border-slate-700/60">
+          <h3 class="text-sm font-bold text-emerald-400 mb-1.5 flex items-center gap-2">🎯 Estatística Inferencial (Amostral)</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Visitar 75 milhões de casas todo ano é inviável financeiramente. O IBGE utiliza a <strong>PNAD Contínua</strong> (211 mil domicílios), aplicando a teoria das probabilidades para garantir que a amostra reflita a realidade nacional com margem de erro controlada (ex: $\pm 1,5\%$).
+          </p>
+        </div>
+      </div>
+
+      <!-- DEEP DIVE: SOCIOLOGIA DA VARIÁVEL -->
+      <div class="glass-card p-5 rounded-xl border border-slate-700/80 mb-6">
+        <h3 class="text-sm font-bold text-slate-100 mb-3 flex items-center gap-2">
+          <span>🧠 A Sociologia da Variável: Categorizar é um Ato Político</span>
+        </h3>
+        
+        <div class="space-y-3.5 text-xs text-slate-300">
+          <div class="p-3 rounded-lg bg-slate-900/70 border border-violet-500/20">
+            <h4 class="font-bold text-violet-400 text-xs mb-1">1. Qualitativa Nominal — Exemplo: Raça/Cor e Etnia (Censo IBGE & UNICEF)</h4>
+            <p class="leading-relaxed">
+              O Censo de 2010 registrou 305 etnias e 274 idiomas indígenas vivos. Em provas do COTUCA, dados do UNICEF mostram que $64,1\%$ das crianças em trabalho infantil e $83,5\%$ das vítimas de homicídio entre 10 e 19 anos são negras.<br>
+              <strong class="text-slate-200">Análise Crítica:</strong> Não há ordem matemática entre ser "pardo", "preto" ou "indígena". Contudo, ao cruzar essa variável nominal com variáveis quantitativas (renda, violência), a estatística descritiva expõe o <strong>racismo estrutural</strong>. Sem a variável nominal, a desigualdade racial seria invisível.
+            </p>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-900/70 border border-emerald-500/20">
+            <h4 class="font-bold text-emerald-400 text-xs mb-1">2. Qualitativa Ordinal — Exemplo: Grau de Escolaridade</h4>
+            <p class="leading-relaxed">
+              Categorias: Sem Instrução $\rightarrow$ Fundamental Incompleto $\rightarrow$ Médio Completo $\rightarrow$ Superior Completo.<br>
+              <strong class="text-slate-200">Análise Crítica:</strong> Existe uma ordenação clara de progressão. As bancas usam tabelas ordinais para identificar gargalos de evasão escolar nas periferias.
+            </p>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-900/70 border border-amber-500/20">
+            <h4 class="font-bold text-amber-400 text-xs mb-1">3. Quantitativa Discreta vs. Contínua — A Medição do Espaço Urbano</h4>
+            <p class="leading-relaxed">
+              • <strong>Discreta (Contagem Inteira):</strong> Número de pessoas por domicílio (ex: 8 pessoas em 2 cômodos gera <em>adensamento excessivo</em> de $4\text{ pessoas/cômodo}$).<br>
+              • <strong>Contínua (Medição Real):</strong> Rendimento mensal per capita ($\text{R}\$\, 1.412,50$) ou tempo de deslocamento até a escola em minutos (pode assumir qualquer valor real positivo).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- GAMIFIED VARIABLE CLASSIFIER -->
+      <div class="glass-card p-5 rounded-xl border border-slate-700/80 mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">🕹️ Classificador Gamificado de Variáveis</h3>
+          <span class="text-xs text-violet-400 font-mono">Padrão COTUCA / IBGE</span>
+        </div>
+        <p class="text-xs text-slate-400 mb-4">Clique na classificação correta para testar seus conhecimentos sobre os 4 tipos de variáveis:</p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="classifier-item p-3 rounded-lg bg-slate-900/80 border border-slate-700" data-correct-type="Qualitativa Nominal">
+            <span class="text-xs font-bold text-emerald-400">1. Raça / Cor (Autodeclaração Censo)</span>
+            <p class="text-[11px] text-slate-400 mb-2">Categorias: Pardo, Preto, Indígena, Amarelo, Branco.</p>
+            <div class="flex flex-wrap gap-1">
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Qualitativa Nominal">Nominal</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Qualitativa Ordinal">Ordinal</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Quantitativa Discreta">Discreta</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Quantitativa Contínua">Contínua</button>
+            </div>
+            <div class="feedback-msg"></div>
+          </div>
+
+          <div class="classifier-item p-3 rounded-lg bg-slate-900/80 border border-slate-700" data-correct-type="Qualitativa Ordinal">
+            <span class="text-xs font-bold text-violet-400">2. Nível de Escolaridade</span>
+            <p class="text-[11px] text-slate-400 mb-2">Fundamental → Médio → Técnico → Superior.</p>
+            <div class="flex flex-wrap gap-1">
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Qualitativa Nominal">Nominal</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Qualitativa Ordinal">Ordinal</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Quantitativa Discreta">Discreta</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Quantitativa Contínua">Contínua</button>
+            </div>
+            <div class="feedback-msg"></div>
+          </div>
+
+          <div class="classifier-item p-3 rounded-lg bg-slate-900/80 border border-slate-700" data-correct-type="Quantitativa Discreta">
+            <span class="text-xs font-bold text-amber-400">3. Nº de Pessoas no Domicílio</span>
+            <p class="text-[11px] text-slate-400 mb-2">Contagem exata inteira: 2, 3, 4, 5 moradores.</p>
+            <div class="flex flex-wrap gap-1">
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Qualitativa Nominal">Nominal</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Qualitativa Ordinal">Ordinal</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Quantitativa Discreta">Discreta</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Quantitativa Contínua">Contínua</button>
+            </div>
+            <div class="feedback-msg"></div>
+          </div>
+
+          <div class="classifier-item p-3 rounded-lg bg-slate-900/80 border border-slate-700" data-correct-type="Quantitativa Contínua">
+            <span class="text-xs font-bold text-emerald-400">4. Tempo de Deslocamento (Minutos)</span>
+            <p class="text-[11px] text-slate-400 mb-2">Mensuração real contínua: ex. 32.5 minutos.</p>
+            <div class="flex flex-wrap gap-1">
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Qualitativa Nominal">Nominal</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Qualitativa Ordinal">Ordinal</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Quantitativa Discreta">Discreta</button>
+              <button class="classify-btn px-2 py-1 rounded bg-slate-800 hover:bg-violet-600 text-[10px] text-slate-300" data-type="Quantitativa Contínua">Contínua</button>
+            </div>
+            <div class="feedback-msg"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE POLL COLLECTION CARD -->
+      <div class="glass-card p-5 rounded-xl border border-violet-500/30">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+          <div>
+            <span class="badge-live text-xs font-mono uppercase text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30 font-semibold">● Pesquisa de Campo ao Vivo</span>
+            <h3 class="text-base font-bold text-slate-100 mt-1">Coleta de Dados da Turma</h3>
+            <p class="text-xs text-slate-400">Responda ao formulário no celular para gerarmos o gráfico da sala ao vivo!</p>
+          </div>
+
+          <div class="p-3 bg-white rounded-lg flex flex-col items-center shrink-0 shadow-md">
+            <svg class="w-24 h-24" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="100" height="100" fill="white"/>
+              <rect x="10" y="10" width="25" height="25" fill="#0F172A"/>
+              <rect x="15" y="15" width="15" height="15" fill="white"/>
+              <rect x="18" y="18" width="9" height="9" fill="#0F172A"/>
+              <rect x="65" y="10" width="25" height="25" fill="#0F172A"/>
+              <rect x="70" y="15" width="15" height="15" fill="white"/>
+              <rect x="73" y="18" width="9" height="9" fill="#0F172A"/>
+              <rect x="10" y="65" width="25" height="25" fill="#0F172A"/>
+              <rect x="15" y="70" width="15" height="15" fill="white"/>
+              <rect x="18" y="73" width="9" height="9" fill="#0F172A"/>
+              <rect x="45" y="15" width="10" height="10" fill="#0F172A"/>
+              <rect x="45" y="45" width="15" height="15" fill="#0F172A"/>
+              <rect x="65" y="65" width="20" height="20" fill="#0F172A"/>
+            </svg>
+            <span class="text-[10px] font-mono text-slate-900 font-bold mt-1">Escaneie o QR Code</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mb-4">
+          <button id="fetch-live-data-btn" class="px-3.5 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-md transition-all flex items-center gap-1.5">
+            🔄 Baixar Respostas (Google Sheets)
+          </button>
+          <button id="load-sample-data-btn" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition-all">
+            📊 Carregar Dados Exemplo (IBGE)
+          </button>
+        </div>
+
+        <div id="live-data-status" class="text-xs font-mono text-slate-400 mb-3">ℹ️ Clique para carregar os dados atualizados.</div>
+
+        <div class="grid grid-cols-3 gap-2 mb-4 text-center">
+          <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase font-mono">Média (x̄)</span>
+            <div id="live-mean-val" class="text-base font-bold text-emerald-400">-- min</div>
+          </div>
+          <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase font-mono">Mediana (Md)</span>
+            <div id="live-median-val" class="text-base font-bold text-violet-400">-- min</div>
+          </div>
+          <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
+            <span class="text-[10px] text-slate-400 uppercase font-mono">Desvio (σ)</span>
+            <div id="live-std-val" class="text-base font-bold text-amber-400">-- min</div>
+          </div>
+        </div>
+
+        <div class="h-56 relative w-full">
+          <canvas id="liveClassChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== BLOCO 2 ==================== -->
+    <section class="slide-block hidden" data-block-id="2">
+      <header class="mb-5">
+        <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 font-semibold">Bloco 2 • 35 minutos</span>
+        <h2 class="text-2xl font-bold text-emerald-400 mt-2">Medidas de Tendência Central</h2>
+        <p class="text-sm text-slate-400">Média Aritmética Simples, Média Ponderada, Mediana e Moda.</p>
+      </header>
+
+      <!-- PROVOCAÇÃO INICIAL -->
+      <div class="glass-card p-4 rounded-xl border-l-4 border-violet-500 mb-6 teacher-speech">
+        <span class="text-xs font-mono uppercase text-violet-400 font-bold tracking-wide">💡 Provocação Inicial:</span>
+        <blockquote class="text-sm text-slate-200 italic mt-1 leading-relaxed">
+          "Se colocarmos em uma sala de aula 19 trabalhadores informais que ganham 1 salário mínimo ($\text{R}\$\, 1.412,00$) e o empresário mais rico do país entrar nessa mesma sala, a <strong>renda média</strong> saltará instantaneamente para dezenas de milhões de reais.<br>
+          Pergunta: algum dos 19 trabalhadores ficou mais rico? Não. Essa é a limitação da Média Aritmética Simples."
+        </blockquote>
+      </div>
+
+      <!-- FORMULAS & DEFINITIONS SUMMARY -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+        <div class="glass-card p-4 rounded-xl border border-slate-700/60">
+          <h3 class="text-xs font-bold text-emerald-400 uppercase font-mono">1. Média Simples (x̄)</h3>
+          <div class="text-violet-300 text-sm my-1">
+            $$\bar{x} = \frac{\sum_{i=1}^{n} x_i}{n}$$
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1">Soma de todos os dados dividida pela quantidade total ($n$). Sensível a *outliers*.</p>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl border border-slate-700/60">
+          <h3 class="text-xs font-bold text-violet-400 uppercase font-mono">2. Mediana (Md)</h3>
+          <p class="text-xs text-slate-200 font-semibold mt-1">Ponto Central do Rol (50%)</p>
+          <p class="text-[11px] text-slate-400 mt-1">Divide o grupo ordenado em duas metades (50% abaixo e 50% acima). Insensível a super-ricos.</p>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl border border-slate-700/60">
+          <h3 class="text-xs font-bold text-amber-400 uppercase font-mono">3. Moda (Mo)</h3>
+          <p class="text-xs text-slate-200 font-semibold mt-1">Maior Frequência Absoluta</p>
+          <p class="text-[11px] text-slate-400 mt-1">O valor ou categoria que apresenta a maior repetição no conjunto de dados.</p>
+        </div>
+      </div>
+
+      <!-- DEEP DIVE: MEDIANA (EXPLICAÇÕES, EXEMPLOS & SIMULADOR DO ROL) -->
+      <div class="glass-card p-5 rounded-xl border border-violet-500/30 mb-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-violet-400 flex items-center gap-2">
+            <span>📌 Aprofundamento: A Mediana ($Md$) e a Ordenação dos Dados (Rol)</span>
+          </h3>
+          <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Posição Central</span>
+        </div>
+
+        <p class="text-xs text-slate-300 leading-relaxed">
+          A <strong>Mediana</strong> é a medida de tendência central que não se deixa influenciar por valores extremos. O primeiro passo obrigatório para encontrá-la é organizar o conjunto de dados em ordem crescente ou decrescente, formando o <strong>Rol</strong>.
+        </p>
+
+        <!-- EXEMPLO ÍMPAR VS PAR -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <!-- ÍMPAR -->
+          <div class="p-3.5 rounded-lg bg-slate-900/70 border border-violet-500/20">
+            <h4 class="font-bold text-violet-400 text-xs mb-1">Caso A: Nº Ímpar de Dados ($n = 5$)</h4>
+            <p class="text-slate-300 leading-relaxed mb-2">
+              Idades de 5 alunos: $\{18, 14, 16, 15, 17\}$.<br>
+              <strong>1. Montar o Rol:</strong> $\{14, 15, \mathbf{16}, 17, 18\}$<br>
+              <strong>2. Posição Central:</strong> Posição $\frac{n+1}{2} = \frac{6}{2} = 3^{\text{a}}$ posição.
+            </p>
+            <div class="p-2 rounded bg-slate-950 text-center font-mono font-bold text-emerald-400">
+              $$Md = 16\text{ anos}$$
+            </div>
+          </div>
+
+          <!-- PAR -->
+          <div class="p-3.5 rounded-lg bg-slate-900/70 border border-emerald-500/20">
+            <h4 class="font-bold text-emerald-400 text-xs mb-1">Caso B: Nº Par de Dados ($n = 6$)</h4>
+            <p class="text-slate-300 leading-relaxed mb-2">
+              Salários em R$: $\{1.412, 1.412, 1.800, 2.200, 3.500, 15.000\}$.<br>
+              <strong>1. Rol já ordenado:</strong> Os dois centrais são $1.800$ e $2.200$.<br>
+              <strong>2. Média dos dois centrais:</strong> $\frac{1800 + 2200}{2}$.
+            </p>
+            <div class="p-2 rounded bg-slate-950 text-center font-mono font-bold text-emerald-400">
+              $$Md = \frac{1800 + 2200}{2} = \text{R}\$\, 2.000,00$$
+            </div>
+          </div>
+        </div>
+
+        <!-- VISUALIZADOR / SIMULADOR INTERATIVO DA MEDIANA -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-violet-500/40">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-xs font-bold text-slate-100 flex items-center gap-2">🎛️ Visualizador Interativo de Rol e Mediana</h4>
+            <span class="text-[10px] font-mono text-violet-400">Ordene e Encontre o Centro</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mb-3">Insira valores numéricos (separados por vírgula) ou altere a lista para visualizar o Rol ordenado e o elemento central destacado:</p>
+
+          <div class="flex gap-2 mb-3">
+            <input id="median-input-list" type="text" value="18, 14, 25, 16, 17, 30, 12" class="w-full bg-slate-950 border border-slate-700 rounded px-3 py-1.5 text-xs font-mono text-emerald-400 font-bold" placeholder="ex: 10, 25, 15, 30, 20">
+            <button id="calc-median-btn" class="px-3 py-1.5 rounded bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold whitespace-nowrap">
+              ⚡ Gerar Rol & Mediana
+            </button>
+          </div>
+
+          <div id="median-visual-container" class="p-3 rounded-lg bg-slate-950 border border-slate-800 space-y-2 text-xs font-mono">
+            <!-- Rendered by js/charts.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- DEEP DIVE: MODA (EXPLICAÇÕES, TIPOS & SIMULADOR DE FREQUÊNCIA) -->
+      <div class="glass-card p-5 rounded-xl border border-amber-500/30 mb-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">
+            <span>📊 Aprofundamento: A Moda ($Mo$) e os Tipos de Frequência</span>
+          </h3>
+          <span class="text-xs font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">Maior Frequência</span>
+        </div>
+
+        <p class="text-xs text-slate-300 leading-relaxed">
+          A <strong>Moda</strong> é o valor ou categoria mais popular (de maior ocorrência) em um levantamento estatístico. Ao contrário da média e da mediana, a Moda pode ser aplicada tanto para variáveis quantitativas quanto para variáveis <strong>qualitativas nominais</strong> (ex: a marca de celular mais usada ou o meio de transporte mais comum).
+        </p>
+
+        <!-- CLASSIFICAÇÃO DA MODA -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="p-3 rounded-lg bg-slate-900/70 border border-slate-700">
+            <h4 class="font-bold text-slate-300 text-xs mb-1">1. Amodal (Sem Moda)</h4>
+            <p class="text-slate-400 text-[11px]">Todos os valores aparecem com a mesma frequência.<br>Ex: $\{12, 15, 18, 22\}$.</p>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-900/70 border border-amber-500/30">
+            <h4 class="font-bold text-amber-400 text-xs mb-1">2. Unimodal (1 Moda)</h4>
+            <p class="text-slate-400 text-[11px]">Existe um único valor de pico máximo.<br>Ex: Calçado nº 38 mais vendido.</p>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-900/70 border border-violet-500/30">
+            <h4 class="font-bold text-violet-400 text-xs mb-1">3. Bimodal / Multimodal</h4>
+            <p class="text-slate-400 text-[11px]">Dois ou mais valores empatados no pico de frequência máxima.<br>Ex: Ônibus (18) e A pé (18).</p>
+          </div>
+        </div>
+
+        <!-- VISUALIZADOR / SIMULADOR INTERATIVO DA MODA -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-amber-500/40">
+          <div class="flex items-center justify-between mb-2">
+            <h4 class="text-xs font-bold text-slate-100 flex items-center gap-2">📊 Construtor Interativo de Frequência e Moda</h4>
+            <span id="mode-type-badge" class="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">Unimodal</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mb-3">Clique nos botões de `+` para simular votos nas opções de transporte e observe a Moda sendo destacada automaticamente em tempo real:</p>
+
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+            <div class="p-2.5 rounded bg-slate-800 border border-slate-700 text-center">
+              <span class="text-xs text-slate-200 block font-semibold mb-1">🚌 Ônibus</span>
+              <div class="flex items-center justify-center gap-2">
+                <button class="mode-dec-btn px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-xs" data-item="Ônibus">-</button>
+                <span id="mode-count-onibus" class="font-mono text-emerald-400 font-bold text-sm">18</span>
+                <button class="mode-inc-btn px-2 py-0.5 rounded bg-violet-600 hover:bg-violet-500 text-xs" data-item="Ônibus">+</button>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded bg-slate-800 border border-slate-700 text-center">
+              <span class="text-xs text-slate-200 block font-semibold mb-1">🚶 A pé</span>
+              <div class="flex items-center justify-center gap-2">
+                <button class="mode-dec-btn px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-xs" data-item="A pé">-</button>
+                <span id="mode-count-ape" class="font-mono text-emerald-400 font-bold text-sm">8</span>
+                <button class="mode-inc-btn px-2 py-0.5 rounded bg-violet-600 hover:bg-violet-500 text-xs" data-item="A pé">+</button>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded bg-slate-800 border border-slate-700 text-center">
+              <span class="text-xs text-slate-200 block font-semibold mb-1">🚗 Carro</span>
+              <div class="flex items-center justify-center gap-2">
+                <button class="mode-dec-btn px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-xs" data-item="Carro">-</button>
+                <span id="mode-count-carro" class="font-mono text-emerald-400 font-bold text-sm">4</span>
+                <button class="mode-inc-btn px-2 py-0.5 rounded bg-violet-600 hover:bg-violet-500 text-xs" data-item="Carro">+</button>
+              </div>
+            </div>
+
+            <div class="p-2.5 rounded bg-slate-800 border border-slate-700 text-center">
+              <span class="text-xs text-slate-200 block font-semibold mb-1">🚲 Bicicleta</span>
+              <div class="flex items-center justify-center gap-2">
+                <button class="mode-dec-btn px-2 py-0.5 rounded bg-slate-700 hover:bg-slate-600 text-xs" data-item="Bicicleta">-</button>
+                <span id="mode-count-bike" class="font-mono text-emerald-400 font-bold text-sm">2</span>
+                <button class="mode-inc-btn px-2 py-0.5 rounded bg-violet-600 hover:bg-violet-500 text-xs" data-item="Bicicleta">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-950 border border-amber-500/30 flex items-center justify-between">
+            <span class="text-xs font-semibold text-slate-300">Moda Atual ($Mo$):</span>
+            <span id="mode-result-display" class="text-sm font-bold font-mono text-amber-400 bg-amber-500/10 px-3 py-1 rounded border border-amber-500/30">🚌 Ônibus (18 votos)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÉDIA PONDERADA (DEFINIÇÃO, FÓRMULA, EXEMPLOS & JANELA INTERATIVA) -->
+      <div class="glass-card p-5 rounded-xl border border-violet-500/30 mb-6 space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-bold text-violet-400 flex items-center gap-2">
+            <span>⚖️ A Média Ponderada ($\bar{x}_p$)</span>
+          </h3>
+          <span class="text-xs font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Frequência e Pesos Relativos</span>
+        </div>
+
+        <p class="text-xs text-slate-300 leading-relaxed">
+          Na <strong>Média Ponderada</strong>, nem todos os elementos têm a mesma importância. Cada valor $x_i$ é multiplicado por um <strong>peso ($w_i$)</strong> (ou frequência relativa), e a soma desses produtos é dividida pela soma total dos pesos.
+        </p>
+
+        <!-- FÓRMULA KA-TEX -->
+        <div class="p-3 rounded-lg bg-slate-900/80 border border-violet-500/20 text-center">
+          <div class="text-violet-300 text-base">
+            $$\bar{x}_p = \frac{\sum_{i=1}^{n} (x_i \cdot w_i)}{\sum_{i=1}^{n} w_i} = \frac{x_1 \cdot w_1 + x_2 \cdot w_2 + \dots + x_n \cdot w_n}{w_1 + w_2 + \dots + w_n}$$
+          </div>
+        </div>
+
+        <!-- 2 EXEMPLOS PRÁTICOS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <!-- EXEMPLO 1 -->
+          <div class="p-3 rounded-lg bg-slate-900/70 border border-slate-700">
+            <h4 class="font-bold text-emerald-400 text-xs mb-1">Exemplo 1: Processo Seletivo (COTUCA / IFs)</h4>
+            <p class="text-slate-300 leading-relaxed">
+              Um candidato obtém nota <strong>8,0</strong> em Matemática (peso 3), nota <strong>6,0</strong> em Português (peso 2) e nota <strong>9,0</strong> em Humanas (peso 1):<br>
+              $$\bar{x}_p = \frac{(8,0 \cdot 3) + (6,0 \cdot 2) + (9,0 \cdot 1)}{3 + 2 + 1} = \frac{24 + 12 + 9}{6} = \frac{45}{6} = \mathbf{7,5}$$
+            </p>
+          </div>
+
+          <!-- EXEMPLO 2 -->
+          <div class="p-3 rounded-lg bg-slate-900/70 border border-slate-700">
+            <h4 class="font-bold text-amber-400 text-xs mb-1">Exemplo 2: Renda Média Regional (Dados IBGE)</h4>
+            <p class="text-slate-300 leading-relaxed">
+              Uma cidade possui 3 bairros: Bairro X tem 1.000 moradores com renda $\text{R}\$\, 2.000$, Bairro Y tem 3.000 moradores com renda $\text{R}\$\, 4.000$ e Bairro Z tem 1.000 moradores com renda $\text{R}\$\, 10.000$:<br>
+              $$\bar{x}_p = \frac{(2000 \cdot 1) + (4000 \cdot 3) + (10000 \cdot 1)}{1 + 3 + 1} = \frac{24.000}{5} = \mathbf{\text{R}\$\, 4.800,00}$$
+            </p>
+          </div>
+        </div>
+
+        <!-- JANELA INTERATIVA DE MÉDIA PONDERADA -->
+        <div class="p-4 rounded-xl bg-slate-900/90 border border-violet-500/40">
+          <h4 class="text-xs font-bold text-slate-100 mb-2 flex items-center gap-2">🧮 Calculadora Interativa de Média Ponderada</h4>
+          <p class="text-[11px] text-slate-400 mb-3">Altere as notas/valores e os seus respectivos pesos para calcular a média ponderada em tempo real:</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+            <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700">
+              <label class="text-[10px] text-slate-400 block font-mono">Item 1 (ex: Matemática)</label>
+              <div class="flex gap-2 mt-1">
+                <input id="wp-val-1" type="number" min="0" max="10" step="0.5" value="8.0" class="w-full bg-slate-900 px-2 py-1 rounded text-xs border border-slate-600 text-emerald-400 font-bold">
+                <input id="wp-weight-1" type="number" min="1" max="10" value="3" class="w-16 bg-slate-900 px-2 py-1 rounded text-xs border border-violet-500/50 text-violet-300 font-bold" title="Peso">
+              </div>
+              <span class="text-[9px] text-slate-400 block mt-1">Nota / Peso</span>
+            </div>
+
+            <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700">
+              <label class="text-[10px] text-slate-400 block font-mono">Item 2 (ex: Português)</label>
+              <div class="flex gap-2 mt-1">
+                <input id="wp-val-2" type="number" min="0" max="10" step="0.5" value="6.0" class="w-full bg-slate-900 px-2 py-1 rounded text-xs border border-slate-600 text-emerald-400 font-bold">
+                <input id="wp-weight-2" type="number" min="1" max="10" value="2" class="w-16 bg-slate-900 px-2 py-1 rounded text-xs border border-violet-500/50 text-violet-300 font-bold" title="Peso">
+              </div>
+              <span class="text-[9px] text-slate-400 block mt-1">Nota / Peso</span>
+            </div>
+
+            <div class="p-2.5 rounded bg-slate-800/80 border border-slate-700">
+              <label class="text-[10px] text-slate-400 block font-mono">Item 3 (ex: Humanas)</label>
+              <div class="flex gap-2 mt-1">
+                <input id="wp-val-3" type="number" min="0" max="10" step="0.5" value="9.0" class="w-full bg-slate-900 px-2 py-1 rounded text-xs border border-slate-600 text-emerald-400 font-bold">
+                <input id="wp-weight-3" type="number" min="1" max="10" value="1" class="w-16 bg-slate-900 px-2 py-1 rounded text-xs border border-violet-500/50 text-violet-300 font-bold" title="Peso">
+              </div>
+              <span class="text-[9px] text-slate-400 block mt-1">Nota / Peso</span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between p-3 rounded-lg bg-violet-950/60 border border-violet-500/40">
+            <span class="text-xs font-semibold text-slate-200">Média Ponderada Resultante ($\bar{x}_p$):</span>
+            <span id="weighted-mean-result" class="text-lg font-bold font-mono text-emerald-400 bg-slate-900 px-3 py-1 rounded border border-emerald-500/40">7,50</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CÁLCULOS PRÁTICOS & VALOR DESCONHECIDO -->
+      <div class="glass-card p-5 rounded-xl border border-slate-700/80 mb-6 space-y-4">
+        <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+          <span>🔎 Cálculos Práticos e Encontrar um Valor Desconhecido</span>
+        </h3>
+
+        <!-- CÁLCULO DE VALOR DESCONHECIDO A PARTIR DE 3 VALORES -->
+        <div class="p-4 rounded-lg bg-slate-900/80 border border-emerald-500/30 text-xs text-slate-300 space-y-2">
+          <h4 class="font-bold text-emerald-400 text-xs flex items-center gap-1.5">
+            🎯 Exemplo Recorrente: Como Encontrar um Valor Desconhecido ($x_3$) a partir de uma Média Dada?
+          </h4>
+          <p class="leading-relaxed">
+            <strong>Situação de Prova:</strong> Um estudante realizou duas avaliações no vestibulinho e tirou <strong>6,5</strong> e <strong>7,5</strong>. Para ser aprovado, ele precisa atingir uma <strong>média final exatamente igual a 8,0</strong> nas três avaliações. Qual nota ($x_3$) ele precisa tirar na terceira prova?
+          </p>
+          <div class="p-3 rounded bg-slate-950 border border-slate-800 font-mono text-xs text-violet-300 space-y-1">
+            <p>1. Equação da Média de 3 valores: $$\frac{x_1 + x_2 + x_3}{3} = \bar{x}$$</p>
+            <p>2. Substituindo os valores conhecidos: $$\frac{6,5 + 7,5 + x_3}{3} = 8,0$$</p>
+            <p>3. Multiplicando ambos os lados por 3: $$14,0 + x_3 = 24,0$$</p>
+            <p>4. Isolando o $x_3$: $$x_3 = 24,0 - 14,0 \implies \mathbf{x_3 = 10,0}$$</p>
+          </div>
+          <p class="text-[11px] text-slate-400 italic">
+            Conclusão: O aluno precisará tirar nota máxima (10,0) na última prova para compensar o desempenho anterior e alcançar a média 8,0.
+          </p>
+        </div>
+
+        <!-- OUTRO EXEMPLO PRÁTICO: TEMPO MÉDIO DE DESLOCAMENTO -->
+        <div class="p-4 rounded-lg bg-slate-900/80 border border-slate-700 text-xs text-slate-300 space-y-2">
+          <h4 class="font-bold text-amber-400 text-xs">🚗 Outro Exemplo Prático: Média de Deslocamento Urbano da Turma</h4>
+          <p class="leading-relaxed">
+            Considere o tempo de deslocamento (em minutos) de 5 estudantes até o vestibulinho: $15\text{ min}$, $20\text{ min}$, $30\text{ min}$, $45\text{ min}$ e $90\text{ min}$.
+          </p>
+          <p class="font-mono text-slate-200">
+            $$\bar{x} = \frac{15 + 20 + 30 + 45 + 90}{5} = \frac{200}{5} = \mathbf{40\text{ minutos}}$$
+          </p>
+          <p class="text-[11px] text-slate-400">
+            Observe que o estudante que leva $90\text{ min}$ (outlier) puxa a média para $40\text{ min}$, enquanto a <strong>Mediana é $30\text{ min}$</strong>.
+          </p>
+        </div>
+      </div>
+
+      <!-- REFORMATTED VISUAL TABLE FOR COTUCA 2019 QUESTION -->
+      <div class="glass-card p-5 rounded-xl border border-slate-700/80 mb-6">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-bold text-violet-400 flex items-center gap-2">📜 Aplicação em Prova: COTUCA (Análise de Desvio da Média)</h3>
+          <span class="text-xs font-mono text-emerald-400">COTUCA 2019</span>
+        </div>
+        <p class="text-xs text-slate-300 mb-4">
+          O quadro a seguir apresenta o número de candidatos inscritos no vestibulinho do COTUCA ao longo de cinco anos consecutivos. Veja como calcular a média e determinar o ano de maior distanciamento:
+        </p>
+
+        <!-- BEAUTIFUL VISUAL HTML TABLE -->
+        <div class="overflow-x-auto mb-4">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-800 text-violet-300 font-mono border-b border-slate-700">
+                <th class="p-2.5 rounded-tl-lg">Ano</th>
+                <th class="p-2.5">Inscritos ($x_i$)</th>
+                <th class="p-2.5">Média ($\bar{x}$)</th>
+                <th class="p-2.5">Cálculo do Desvio $|x_i - \bar{x}|$</th>
+                <th class="p-2.5 rounded-tr-lg text-right">Distância Absoluta</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-800 font-mono text-slate-200">
+              <tr class="hover:bg-slate-800/40">
+                <td class="p-2.5 font-bold text-slate-400">2014</td>
+                <td class="p-2.5">6.331</td>
+                <td class="p-2.5 text-slate-400">5.768,4</td>
+                <td class="p-2.5 text-slate-400 font-mono">|6.331 - 5.768,4|</td>
+                <td class="p-2.5 text-right font-bold text-slate-300">562,6</td>
+              </tr>
+              <tr class="bg-violet-950/40 border-l-4 border-violet-500 hover:bg-violet-900/50">
+                <td class="p-2.5 font-bold text-violet-300">2015 ⭐</td>
+                <td class="p-2.5 font-bold text-violet-300">5.151</td>
+                <td class="p-2.5 text-slate-400">5.768,4</td>
+                <td class="p-2.5 text-violet-300 font-mono">|5.151 - 5.768,4| = |-617,4|</td>
+                <td class="p-2.5 text-right font-bold text-amber-400 text-sm">617,4 (MAIOR!)</td>
+              </tr>
+              <tr class="hover:bg-slate-800/40">
+                <td class="p-2.5 font-bold text-slate-400">2016</td>
+                <td class="p-2.5">5.925</td>
+                <td class="p-2.5 text-slate-400">5.768,4</td>
+                <td class="p-2.5 text-slate-400 font-mono">|5.925 - 5.768,4|</td>
+                <td class="p-2.5 text-right font-bold text-slate-300">156,6</td>
+              </tr>
+              <tr class="hover:bg-slate-800/40">
+                <td class="p-2.5 font-bold text-slate-400">2017</td>
+                <td class="p-2.5">5.557</td>
+                <td class="p-2.5 text-slate-400">5.768,4</td>
+                <td class="p-2.5 text-slate-400 font-mono">|5.557 - 5.768,4|</td>
+                <td class="p-2.5 text-right font-bold text-slate-300">211,4</td>
+              </tr>
+              <tr class="hover:bg-slate-800/40">
+                <td class="p-2.5 font-bold text-slate-400">2018</td>
+                <td class="p-2.5">5.878</td>
+                <td class="p-2.5 text-slate-400">5.768,4</td>
+                <td class="p-2.5 text-slate-400 font-mono">|5.878 - 5.768,4|</td>
+                <td class="p-2.5 text-right font-bold text-slate-300">109,6</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="p-3 rounded-lg bg-slate-900/80 text-xs font-mono text-slate-300 space-y-1">
+          <p class="text-emerald-400 font-bold">1. Média Aritmética Total:</p>
+          <p>$$\bar{x} = \frac{6331 + 5151 + 5925 + 5557 + 5878}{5} = \frac{28842}{5} = \mathbf{5768,4\text{ candidatos}}$$</p>
+          <p class="text-amber-400 font-bold mt-2">2. Resposta (Gabarito B - 2015):</p>
+          <p>O ano de <strong>2015</strong> registrou a maior distância em relação à média ($617,4$), refletindo uma queda atípica no número de inscritos.</p>
+        </div>
+      </div>
+
+      <!-- ASYMMETRY FORMULA -->
+      <div class="glass-card p-4 rounded-xl border border-violet-500/30 mb-6 flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <span class="text-xs font-mono uppercase text-violet-400 font-bold">Geometria da Desigualdade Social:</span>
+          <p class="text-xs text-slate-300">Em distribuições de renda assimétricas à direita, a ordem das medidas centrais é sempre:</p>
+        </div>
+        <div class="text-lg font-bold text-emerald-400 bg-slate-900/80 px-4 py-2 rounded-lg border border-slate-700 font-mono">
+          $$Mo < Md < \bar{x}$$
+        </div>
+      </div>
+
+      <!-- SIMULATOR: OUTLIER NEYMAR EFFECT -->
+      <div class="glass-card p-5 rounded-xl border border-amber-500/30 mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <h3 class="text-sm font-bold text-amber-400 flex items-center gap-2">⚡ Simulador Interativo: "Efeito Outlier / Super-Rico"</h3>
+          <span class="text-xs font-mono text-slate-400">19 Trabalhadores + 1 Empresário</span>
+        </div>
+        <p class="text-xs text-slate-300 mb-4">Arraste o slider para alterar o salário do empresário e veja a linha da Média disparar enquanto a Mediana continua intacta em R$ 1.412,00:</p>
+
+        <div class="mb-4 space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-300">Salário do Empresário (Outlier):</span>
+            <span id="rich-salary-val" class="font-mono font-bold text-amber-400 text-sm">R$ 1.412,00</span>
+          </div>
+          <input id="rich-salary-slider" type="range" min="1412" max="50000000" step="500000" value="1412" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-4 text-center">
+          <div class="p-3 rounded-lg bg-slate-900/80 border border-emerald-500/30">
+            <span class="text-[10px] text-slate-400 font-mono uppercase">Mediana da Sala (50%)</span>
+            <div id="neymar-median-display" class="text-sm font-bold text-emerald-400">R$ 1.412,00</div>
+          </div>
+          <div class="p-3 rounded-lg bg-slate-900/80 border border-amber-500/30">
+            <span class="text-[10px] text-slate-400 font-mono uppercase">Média Distorcida (x̄)</span>
+            <div id="neymar-mean-display" class="text-sm font-bold text-amber-400">R$ 1.412,00</div>
+          </div>
+        </div>
+
+        <div class="h-48 relative w-full">
+          <canvas id="neymarOutlierChart"></canvas>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== BLOCO 3 ==================== -->
+    <section class="slide-block hidden" data-block-id="3">
+      <header class="mb-5">
+        <span class="text-xs font-mono uppercase tracking-widest text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20 font-semibold">Bloco 3 • 30 minutos</span>
+        <h2 class="text-2xl font-bold text-emerald-400 mt-2">Medidas de Dispersão e o Desafio da Equidade</h2>
+        <p class="text-sm text-slate-400">Desvio Simples, Variância ($\sigma^2$) e Desvio Padrão ($\sigma$).</p>
+      </header>
+
+      <!-- PROVOCAÇÃO INICIAL -->
+      <div class="glass-card p-4 rounded-xl border-l-4 border-amber-400 mb-6 teacher-speech">
+        <span class="text-xs font-mono uppercase text-amber-400 font-bold tracking-wide">💡 Provocação Inicial:</span>
+        <blockquote class="text-sm text-slate-200 italic mt-1 leading-relaxed">
+          "Imaginem duas regiões da Região Metropolitana de Campinas com o mesmo investimento médio por aluno na rede pública: $\text{R}\$\, 600,00$.<br>
+          Na Região A, todas as escolas recebem entre $\text{R}\$\, 580,00$ e $\text{R}\$\, 620,00$. Na Região B, uma escola central recebe $\text{R}\$\, 1.500,00$ e quatro periféricas recebem apenas $\text{R}\$\, 375,00$. A média é idêntica, mas a <strong>equidade</strong> é oposta. É aqui que entram as Medidas de Dispersão."
+        </blockquote>
+      </div>
+
+      <!-- COMPLETE 3-STEP MATHEMATICAL FORMULATION -->
+      <div class="glass-card p-5 rounded-xl border border-slate-700/80 mb-6 space-y-4">
+        <h3 class="text-sm font-bold text-slate-100 flex items-center gap-2">
+          <span>📐 Construção Matemática das Medidas de Dispersão em 3 Etapas</span>
+        </h3>
+
+        <!-- STEP 1: DESVIO SIMPLES -->
+        <div class="p-3.5 rounded-lg bg-slate-900/80 border border-violet-500/30">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-violet-400 uppercase font-mono">1. Desvio Simples em Relação à Média ($d_i$)</span>
+            <span class="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded">Propriedade: Σd_i = 0</span>
+          </div>
+          <div class="text-violet-300 text-sm my-1">
+            $$d_i = x_i - \bar{x}$$
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Mede a distância direta de cada dado até a média. <strong class="text-amber-400">Propriedade Fundamental:</strong> A soma dos desvios simples é <em>sempre igual a zero</em> ($\sum (x_i - \bar{x}) = 0$), pois os desvios positivos anulam os negativos. Por isso, a média simples dos desvios não serve para medir a dispersão!
+          </p>
+        </div>
+
+        <!-- STEP 2: VARIÂNCIA -->
+        <div class="p-3.5 rounded-lg bg-slate-900/80 border border-emerald-500/30">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-emerald-400 uppercase font-mono">2. Variância Populacional ($\sigma^2$)</span>
+            <span class="text-[10px] font-mono text-slate-400">Diferenças Quadráticas</span>
+          </div>
+          <div class="text-emerald-300 text-sm my-1">
+            $$\sigma^2 = \frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n}$$
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Para eliminar os sinais negativos, elevamos cada desvio ao quadrado. A Variância é a média das diferenças quadráticas. <strong class="text-slate-200">Limitação:</strong> Sua unidade fica ao quadrado (ex: $\text{reais}^2$ ou $\text{minutos}^2$), o que dificulta a interpretação física.
+          </p>
+        </div>
+
+        <!-- STEP 3: DESVIO PADRÃO -->
+        <div class="p-3.5 rounded-lg bg-slate-900/80 border border-amber-500/30">
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-xs font-bold text-amber-400 uppercase font-mono">3. Desvio Padrão ($\sigma$)</span>
+            <span class="text-[10px] font-mono text-emerald-400">Mesma Unidade dos Dados</span>
+          </div>
+          <div class="text-amber-300 text-sm my-1">
+            $$\sigma = \sqrt{\sigma^2} = \sqrt{\frac{\sum_{i=1}^{n} (x_i - \bar{x})^2}{n}}$$
+          </div>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Extrai a raiz quadrada da variância, retornando à unidade original dos dados (ex: $\text{reais}$ ou $\text{minutos}$). <strong class="text-emerald-400">Análise de Política Pública:</strong> Quanto menor o Desvio Padrão ($\sigma \rightarrow 0$), mais homogêneo e equitativo é o atendimento do serviço público.
+          </p>
+        </div>
+      </div>
+
+      <!-- FIXED SIMULATOR: PUBLIC ALLOCATION & EQUITY (STD DEV) WITH DYNAMIC SPAN IDS -->
+      <div class="glass-card p-5 rounded-xl border border-emerald-500/30 mb-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <div>
+            <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">🏛️ Simulador: Alocação de Verbas & Equidade ($\sigma$)</h3>
+            <p class="text-xs text-slate-400">Ajuste o orçamento de 4 escolas de Campinas/RMC e observe os valores e o Desvio Padrão ($\sigma$):</p>
+          </div>
+          <div id="equity-status-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
+            🟢 Alta Equidade
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+          <div>
+            <label class="text-[11px] text-slate-300 flex justify-between">
+              <span>Escola Bairro A:</span>
+              <span id="fund-val-a" class="font-mono text-violet-400 font-bold">R$ 600.000,00</span>
+            </label>
+            <input id="fund-bairro-a" type="range" min="100000" max="1500000" step="50000" value="600000" class="w-full h-2 bg-slate-800 rounded">
+          </div>
+          <div>
+            <label class="text-[11px] text-slate-300 flex justify-between">
+              <span>Escola Bairro B:</span>
+              <span id="fund-val-b" class="font-mono text-emerald-400 font-bold">R$ 600.000,00</span>
+            </label>
+            <input id="fund-bairro-b" type="range" min="100000" max="1500000" step="50000" value="600000" class="w-full h-2 bg-slate-800 rounded">
+          </div>
+          <div>
+            <label class="text-[11px] text-slate-300 flex justify-between">
+              <span>Escola Bairro C:</span>
+              <span id="fund-val-c" class="font-mono text-amber-400 font-bold">R$ 600.000,00</span>
+            </label>
+            <input id="fund-bairro-c" type="range" min="100000" max="1500000" step="50000" value="600000" class="w-full h-2 bg-slate-800 rounded">
+          </div>
+          <div>
+            <label class="text-[11px] text-slate-300 flex justify-between">
+              <span>Escola Bairro D:</span>
+              <span id="fund-val-d" class="font-mono text-rose-400 font-bold">R$ 600.000,00</span>
+            </label>
+            <input id="fund-bairro-d" type="range" min="100000" max="1500000" step="50000" value="600000" class="w-full h-2 bg-slate-800 rounded">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mb-4 text-center">
+          <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-700">
+            <span class="text-[10px] text-slate-400 font-mono uppercase">Média Aritmética (x̄)</span>
+            <div id="equity-mean-val" class="text-sm font-bold text-slate-200">R$ 600.000,00</div>
+          </div>
+          <div class="p-2.5 rounded-lg bg-slate-900/80 border border-violet-500/30">
+            <span class="text-[10px] text-slate-400 font-mono uppercase">Desvio Padrão (σ)</span>
+            <div id="equity-std-val" class="text-sm font-bold text-violet-400">R$ 0,00</div>
+          </div>
+        </div>
+
+        <div class="h-48 relative w-full">
+          <canvas id="equityChart"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== BLOCO 4 ==================== -->
+    <section class="slide-block hidden" data-block-id="4">
+      <header class="mb-5">
+        <span class="text-xs font-mono uppercase tracking-widest text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-full border border-violet-500/20 font-semibold">Bloco 4 • 15 minutos</span>
+        <h2 class="text-2xl font-bold text-emerald-400 mt-2">Oficina de Resolução "Modo Vestibulinho"</h2>
+        <p class="text-sm text-slate-400">Questões históricas do COTUCA com gabarito sociomatemático comentado passo a passo.</p>
+      </header>
+
+      <!-- STRATEGY TIPS -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
+        <div class="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700 text-center">
+          <span class="text-[10px] font-mono text-violet-400 block font-bold">PASSO 1</span>
+          <span class="text-xs text-slate-200">Leitura do Comando</span>
+        </div>
+        <div class="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700 text-center">
+          <span class="text-[10px] font-mono text-emerald-400 block font-bold">PASSO 2</span>
+          <span class="text-xs text-slate-200">Decodificar Tabela</span>
+        </div>
+        <div class="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700 text-center">
+          <span class="text-[10px] font-mono text-amber-400 block font-bold">PASSO 3</span>
+          <span class="text-xs text-slate-200">Eliminar Absurdos</span>
+        </div>
+        <div class="p-2.5 rounded-lg bg-slate-800/80 border border-slate-700 text-center">
+          <span class="text-[10px] font-mono text-rose-400 block font-bold">PASSO 4</span>
+          <span class="text-xs text-slate-200">Cálculo Focal</span>
+        </div>
+      </div>
+
+      <!-- DYNAMIC QUIZ CONTAINER -->
+      <div id="cotuca-quiz-container">
+        <!-- Loaded dynamically from js/quiz.js -->
+      </div>
+    </section>
+
+    <!-- ==================== BLOCO 5 ==================== -->
+    <section class="slide-block hidden" data-block-id="5">
+      <header class="mb-5">
+        <span class="text-xs font-mono uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20 font-semibold">Bloco 5 • 5 minutos</span>
+        <h2 class="text-2xl font-bold text-emerald-400 mt-2">Encerramento Cidadão</h2>
+        <p class="text-sm text-slate-400">A Estatística como ferramenta de leitura do mundo e garantia de direitos.</p>
+      </header>
+
+      <div class="glass-card p-5 rounded-xl border-l-4 border-emerald-400 mb-6 teacher-speech">
+        <span class="text-xs font-mono uppercase text-emerald-400 font-bold tracking-wide">💡 Consideração Final do Professor:</span>
+        <blockquote class="text-sm text-slate-200 italic mt-2 leading-relaxed">
+          "Chegamos ao final da nossa aula. Hoje vocês viram que a matemática do COTUCA não existe para punir ninguém com contas isoladas.<br><br>
+          A Unicamp e os Institutos Federais exigem que vocês saibam ler tabelas, calcular desvios e interpretar gráficos porque essas são as ferramentas de garantia da cidadania.<br>
+          Quem domina a Média, a Mediana, o Desvio Padrão e as Variáveis não apenas acerta as questões de Matemática: escreve uma excelente redação baseada em evidências e se torna um cidadão impossível de ser manipulado. Vão lá e façam uma excelente prova!"
+        </blockquote>
+      </div>
+
+      <div class="glass-card p-6 rounded-xl border border-violet-500/30 text-center space-y-4">
+        <div class="w-12 h-12 rounded-full bg-violet-600/20 border border-violet-500/40 text-violet-400 flex items-center justify-center mx-auto text-2xl">
+          🎓
+        </div>
+        <h3 class="text-lg font-bold text-slate-50">Parabéns pelo excelente trabalho em sala!</h3>
+        <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+          Este ambiente digital foi desenvolvido para o cursinho pré-vestibulinho pelo <strong>Prof. Diego Gonçalves (z.olhos)</strong>.
+        </p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-800 bg-slate-950 py-4 px-4 mt-8">
+    <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-2">
+      <div>
+        <span>Estatística © 2026 • Cursinho Pré-Vestibulinho</span>
+      </div>
+      <div>
+        <span>Autor: <strong class="text-emerald-400">Prof. Diego Gonçalves (z.olhos)</strong></span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/app.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/quiz.js"></script>
+</body>
+</html>
