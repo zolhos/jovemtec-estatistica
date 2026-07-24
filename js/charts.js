@@ -3,11 +3,64 @@
 // Global Apps Script URL - Configured with real WebApp URL
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzf0jKrq6oZv_i7qngw8mwN9U6mSYcB1WdOYGhmFYcr_zKW265ZIWKM6SgUGWWCoyBX/exec";
 
-// Fallback IBGE / Sample Data for Class Poll
-const fallbackPollData = {
-  transporte: { "Ônibus": 18, "A pé": 8, "Carro": 4, "Bicicleta": 2 },
-  deslocamento: [15, 20, 25, 25, 30, 30, 35, 40, 45, 50, 60, 90, 120]
+// Metadata for the 6 Form Questions
+const questionsMeta = {
+  1: {
+    title: "Gráfico 1 • Meio de Transporte para a Escola",
+    badge: "Qualitativa Nominal",
+    badgeClass: "bg-violet-500/10 text-violet-400 border-violet-500/30",
+    statement: '"Qual é o seu principal meio de transporte para chegar à escola/curso?"',
+    type: "doughnut"
+  },
+  2: {
+    title: "Gráfico 2 • Área Técnica Pretendida no COTUCA / IF",
+    badge: "Qualitativa Nominal",
+    badgeClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+    statement: '"Qual área do ensino técnico você mais tem interesse em cursar no COTUCA/ETEC/IF?"',
+    type: "barHorizontal"
+  },
+  3: {
+    title: "Gráfico 3 • Meta de Escolaridade Futura",
+    badge: "Qualitativa Ordinal",
+    badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/30",
+    statement: '"Qual é o nível máximo de escolaridade que você pretende alcançar no futuro?"',
+    type: "pie"
+  },
+  4: {
+    title: "Gráfico 4 • Adensamento Domiciliar (Moradores)",
+    badge: "Quantitativa Discreta",
+    badgeClass: "bg-blue-500/10 text-blue-400 border-blue-500/30",
+    statement: '"Quantas pessoas (incluindo você) moram atualmente na sua residência?"',
+    type: "barDiscrete"
+  },
+  5: {
+    title: "Gráfico 5 • Tempo de Deslocamento Diário (Minutos)",
+    badge: "Quantitativa Contínua",
+    badgeClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+    statement: '"Aproximadamente, quanto tempo (em minutos) você leva no seu deslocamento diário de ida/volta até a escola/curso?"',
+    type: "barHistogram"
+  },
+  6: {
+    title: "Gráfico 6 • Indicador Cultural (Livros Lidos)",
+    badge: "Quantitativa Discreta",
+    badgeClass: "bg-purple-500/10 text-purple-400 border-purple-500/30",
+    statement: '"Quantos livros inteiros (fora os da escola) você leu no último ano?"',
+    type: "barDiscrete"
+  }
 };
+
+// Rich Sample Data for all 6 questions (Fallback IBGE / Class Sample)
+const samplePollData = {
+  1: { "Ônibus / Transporte Público": 18, "A pé": 8, "Carro / Moto": 4, "Bicicleta": 2 },
+  2: { "Informática / Tecnologia": 12, "Alimentos": 6, "Enfermagem / Saúde": 5, "Eletrotécnica / Mecânica": 7, "Indeciso": 2 },
+  3: { "Ensino Técnico Completo": 6, "Ensino Superior (Graduação)": 16, "Pós-Graduação (Mestrado/Doutorado)": 10 },
+  4: { "2 pessoas": 3, "3 pessoas": 9, "4 pessoas": 12, "5+ pessoas": 8 },
+  5: [15, 20, 25, 25, 30, 30, 35, 40, 45, 50, 60, 90, 120],
+  6: { "0 livros": 5, "1 a 2 livros": 14, "3 a 5 livros": 9, "6+ livros": 4 }
+};
+
+let liveDataProcessed = null;
+let currentActiveQTab = 5;
 
 let liveChartInstance = null;
 let outlierChartInstance = null;
@@ -16,6 +69,7 @@ let modeDataGlobal = { "Ônibus": 18, "A pé": 8, "Carro": 4, "Bicicleta": 2 };
 
 document.addEventListener('DOMContentLoaded', () => {
   initLiveClassChart();
+  initQTabSwitching();
   initNeymarOutlierSimulator();
   initEquitySimulator();
   initWeightedMeanCalculator();
@@ -23,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initModeSimulator();
 });
 
-/* 1. Live Class Data Chart */
+/* 1. Live Class Data Chart & Question Tab Switcher */
 function initLiveClassChart() {
   const ctx = document.getElementById('liveClassChart');
   if (!ctx) return;
@@ -31,27 +85,50 @@ function initLiveClassChart() {
   const btnFetch = document.getElementById('fetch-live-data-btn');
   const btnSample = document.getElementById('load-sample-data-btn');
 
-  renderLiveChart(fallbackPollData.deslocamento);
+  // Initial render with Sample Data
+  liveDataProcessed = samplePollData;
+  renderQuestionChart(currentActiveQTab);
 
   if (btnFetch) {
     btnFetch.addEventListener('click', () => fetchLiveDataFromAppsScript());
   }
   if (btnSample) {
     btnSample.addEventListener('click', () => {
-      renderLiveChart(fallbackPollData.deslocamento);
+      liveDataProcessed = samplePollData;
+      renderQuestionChart(currentActiveQTab);
       showNotification("Dados de Exemplo (IBGE) carregados com sucesso!");
     });
   }
 }
 
+function initQTabSwitching() {
+  const qtabBtns = document.querySelectorAll('.live-qtab-btn');
+  qtabBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const qNum = parseInt(e.currentTarget.getAttribute('data-qtab'));
+      if (qNum && questionsMeta[qNum]) {
+        currentActiveQTab = qNum;
+
+        qtabBtns.forEach(b => {
+          b.className = 'live-qtab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 transition-all whitespace-nowrap';
+        });
+        e.currentTarget.className = 'live-qtab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-600 text-white border border-violet-500 transition-all whitespace-nowrap';
+
+        renderQuestionChart(currentActiveQTab);
+      }
+    });
+  });
+}
+
 async function fetchLiveDataFromAppsScript() {
   const statusEl = document.getElementById('live-data-status');
-  if (statusEl) statusEl.textContent = '⏳ Baixando dados da sala ao vivo...';
+  if (statusEl) statusEl.textContent = '⏳ Baixando respostas da sala ao vivo...';
 
   try {
     if (!APPS_SCRIPT_URL || !APPS_SCRIPT_URL.startsWith("http")) {
       if (statusEl) statusEl.textContent = 'ℹ️ Usando dados de exemplo (URL do Apps Script não configurada).';
-      renderLiveChart(fallbackPollData.deslocamento);
+      liveDataProcessed = samplePollData;
+      renderQuestionChart(currentActiveQTab);
       return;
     }
 
@@ -64,101 +141,174 @@ async function fetchLiveDataFromAppsScript() {
 
     if (!Array.isArray(data) || data.length <= 1) {
       if (statusEl) statusEl.textContent = '⚠️ Nenhuma resposta registrada no formulário ainda. Exibindo dados de exemplo.';
-      renderLiveChart(fallbackPollData.deslocamento);
+      liveDataProcessed = samplePollData;
+      renderQuestionChart(currentActiveQTab);
       return;
     }
 
-    const times = [];
-    const transportesCount = { "Ônibus": 0, "A pé": 0, "Carro": 0, "Bicicleta": 0 };
+    // Process all 6 questions from the real Google Form rows
+    const parsedData = {
+      1: {},
+      2: {},
+      3: {},
+      4: {},
+      5: [],
+      6: {}
+    };
 
-    // Process rows starting from index 1 (skipping header)
     for (let i = 1; i < data.length; i++) {
       const row = data[i];
       if (!row || row.length === 0) continue;
 
-      // Index 5: Deslocamento em minutos (Quantitativa Contínua)
-      const timeVal = parseFloat(row[5]);
-      if (!isNaN(timeVal) && timeVal > 0) {
-        times.push(timeVal);
+      // Q1: Meio de Transporte (row[1])
+      const q1Val = String(row[1] || "").trim();
+      if (q1Val) parsedData[1][q1Val] = (parsedData[1][q1Val] || 0) + 1;
+
+      // Q2: Área Técnica (row[2])
+      const q2Val = String(row[2] || "").trim();
+      if (q2Val) parsedData[2][q2Val] = (parsedData[2][q2Val] || 0) + 1;
+
+      // Q3: Escolaridade (row[3])
+      const q3Val = String(row[3] || "").trim();
+      if (q3Val) parsedData[3][q3Val] = (parsedData[3][q3Val] || 0) + 1;
+
+      // Q4: Moradores (row[4])
+      const q4Val = parseInt(row[4]);
+      if (!isNaN(q4Val)) {
+        const key = q4Val >= 5 ? "5+ pessoas" : `${q4Val} pessoas`;
+        parsedData[4][key] = (parsedData[4][key] || 0) + 1;
       }
 
-      // Index 1: Meio de Transporte (Qualitativa Nominal)
-      const transStr = String(row[1] || "");
-      if (transStr.includes("Ônibus") || transStr.includes("Público")) transportesCount["Ônibus"]++;
-      else if (transStr.includes("A pé")) transportesCount["A pé"]++;
-      else if (transStr.includes("Carro") || transStr.includes("Moto")) transportesCount["Carro"]++;
-      else if (transStr.includes("Bicicleta")) transportesCount["Bicicleta"]++;
-    }
-
-    if (times.length > 0) {
-      renderLiveChart(times);
-      const totalRespostas = data.length - 1;
-      if (statusEl) statusEl.textContent = `✅ ${totalRespostas} resposta(s) da sala ao vivo carregada(s) com sucesso!`;
-
-      // Sync transport answers to Mode simulator if present
-      if (Object.values(transportesCount).some(v => v > 0)) {
-        modeDataGlobal = { ...transportesCount };
-        if (typeof updateModeUI === 'function') {
-          updateModeUI();
-        }
+      // Q5: Tempo Deslocamento (row[5])
+      const q5Val = parseFloat(row[5]);
+      if (!isNaN(q5Val) && q5Val > 0) {
+        parsedData[5].push(q5Val);
       }
-    } else {
-      if (statusEl) statusEl.textContent = '⚠️ Nenhuma resposta numérica válida encontrada na coluna 6. Exibindo dados de exemplo.';
-      renderLiveChart(fallbackPollData.deslocamento);
+
+      // Q6: Livros Lidos (row[6])
+      const q6Val = parseInt(row[6]);
+      if (!isNaN(q6Val)) {
+        let key = `${q6Val} livro(s)`;
+        if (q6Val === 0) key = "0 livros";
+        else if (q6Val <= 2) key = "1 a 2 livros";
+        else if (q6Val <= 5) key = "3 a 5 livros";
+        else key = "6+ livros";
+        parsedData[6][key] = (parsedData[6][key] || 0) + 1;
+      }
     }
+
+    liveDataProcessed = parsedData;
+    const totalRespostas = data.length - 1;
+    if (statusEl) statusEl.textContent = `✅ ${totalRespostas} resposta(s) da sala ao vivo carregada(s) com sucesso!`;
+
+    renderQuestionChart(currentActiveQTab);
   } catch (err) {
     console.error("Erro no Apps Script fetch:", err);
     if (statusEl) statusEl.textContent = '⚠️ Falha na conexão com o Google Sheets. Exibindo dados de demonstração.';
-    renderLiveChart(fallbackPollData.deslocamento);
+    liveDataProcessed = samplePollData;
+    renderQuestionChart(currentActiveQTab);
   }
 }
 
-function renderLiveChart(dataArray) {
+function renderQuestionChart(qNum) {
+  const meta = questionsMeta[qNum];
+  if (!meta) return;
+
+  // Update header text, badge and statement
+  document.getElementById('live-q-title').textContent = meta.title;
+  
+  const badgeEl = document.getElementById('live-q-badge');
+  badgeEl.textContent = meta.badge;
+  badgeEl.className = `text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full border ${meta.badgeClass}`;
+  
+  document.getElementById('live-q-statement').textContent = meta.statement;
+
+  const statsRow = document.getElementById('live-stats-row');
   const ctx = document.getElementById('liveClassChart');
   if (!ctx) return;
 
-  dataArray.sort((a, b) => a - b);
-  const mean = (dataArray.reduce((a, b) => a + b, 0) / dataArray.length).toFixed(1);
-  const mid = Math.floor(dataArray.length / 2);
-  const median = dataArray.length % 2 !== 0 ? dataArray[mid] : ((dataArray[mid - 1] + dataArray[mid]) / 2).toFixed(1);
+  const dataset = (liveDataProcessed && liveDataProcessed[qNum]) ? liveDataProcessed[qNum] : samplePollData[qNum];
 
-  const variance = dataArray.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / dataArray.length;
-  const stdDev = Math.sqrt(variance).toFixed(1);
+  // Show stats row for Q5 (Deslocamento contínuo)
+  if (qNum === 5) {
+    statsRow.classList.remove('hidden');
+    const times = Array.isArray(dataset) && dataset.length > 0 ? dataset : samplePollData[5];
+    times.sort((a, b) => a - b);
+    const mean = (times.reduce((a, b) => a + b, 0) / times.length).toFixed(1);
+    const mid = Math.floor(times.length / 2);
+    const median = times.length % 2 !== 0 ? times[mid] : ((times[mid - 1] + times[mid]) / 2).toFixed(1);
+    const variance = times.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / times.length;
+    const stdDev = Math.sqrt(variance).toFixed(1);
 
-  document.getElementById('live-mean-val').textContent = `${mean} min`;
-  document.getElementById('live-median-val').textContent = `${median} min`;
-  document.getElementById('live-std-val').textContent = `${stdDev} min`;
+    document.getElementById('live-mean-val').textContent = `${mean} min`;
+    document.getElementById('live-median-val').textContent = `${median} min`;
+    document.getElementById('live-std-val').textContent = `${stdDev} min`;
 
-  const counts = { "0-20 min": 0, "21-40 min": 0, "41-60 min": 0, "61+ min": 0 };
-  dataArray.forEach(t => {
-    if (t <= 20) counts["0-20 min"]++;
-    else if (t <= 40) counts["21-40 min"]++;
-    else if (t <= 60) counts["41-60 min"]++;
-    else counts["61+ min"]++;
-  });
+    const counts = { "0-20 min": 0, "21-40 min": 0, "41-60 min": 0, "61+ min": 0 };
+    times.forEach(t => {
+      if (t <= 20) counts["0-20 min"]++;
+      else if (t <= 40) counts["21-40 min"]++;
+      else if (t <= 60) counts["41-60 min"]++;
+      else counts["61+ min"]++;
+    });
+
+    renderChartInstance('bar', Object.keys(counts), Object.values(counts), '#34D399', 'Nº de Alunos');
+  } else {
+    statsRow.classList.add('hidden');
+
+    const labels = Object.keys(dataset);
+    const values = Object.values(dataset);
+
+    if (meta.type === 'doughnut') {
+      renderChartInstance('doughnut', labels, values, ['#8B5CF6', '#34D399', '#FBBF24', '#EC4899', '#3B82F6']);
+    } else if (meta.type === 'pie') {
+      renderChartInstance('pie', labels, values, ['#34D399', '#8B5CF6', '#FBBF24', '#EC4899']);
+    } else if (meta.type === 'barHorizontal') {
+      renderChartInstance('bar', labels, values, '#8B5CF6', 'Frequência Absoluta', true);
+    } else {
+      renderChartInstance('bar', labels, values, '#34D399', 'Frequência Absoluta');
+    }
+  }
+}
+
+function renderChartInstance(type, labels, data, bgColors, datasetLabel = 'Respostas', isHorizontal = false) {
+  const ctx = document.getElementById('liveClassChart');
+  if (!ctx) return;
 
   if (liveChartInstance) liveChartInstance.destroy();
 
-  liveChartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: Object.keys(counts),
-      datasets: [{
-        label: 'Nº de Alunos',
-        data: Object.values(counts),
-        backgroundColor: '#34D399',
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { ticks: { color: '#94A3B8' }, grid: { color: '#334155' } },
-        x: { ticks: { color: '#94A3B8' }, grid: { display: false } }
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: (type === 'doughnut' || type === 'pie'),
+        position: 'right',
+        labels: { color: '#94A3B8', font: { size: 11 } }
       }
     }
+  };
+
+  if (type === 'bar') {
+    options.indexAxis = isHorizontal ? 'y' : 'x';
+    options.scales = {
+      y: { ticks: { color: '#94A3B8' }, grid: { color: '#334155' } },
+      x: { ticks: { color: '#94A3B8' }, grid: { color: isHorizontal ? '#334155' : 'transparent' } }
+    };
+  }
+
+  liveChartInstance = new Chart(ctx, {
+    type: type,
+    data: {
+      labels: labels,
+      datasets: [{
+        label: datasetLabel,
+        data: data,
+        backgroundColor: bgColors,
+        borderRadius: type === 'bar' ? 6 : 0
+      }]
+    },
+    options: options
   });
 }
 
@@ -416,7 +566,7 @@ function updateModeUI() {
   if (!onibusEl || !resultEl) return;
 
   onibusEl.textContent = modeDataGlobal["Ônibus"];
-  apeEl.textContent = modeDataGlobal["A排"] || modeDataGlobal["A pé"];
+  apeEl.textContent = modeDataGlobal["A pé"];
   carroEl.textContent = modeDataGlobal["Carro"];
   bikeEl.textContent = modeDataGlobal["Bicicleta"];
 

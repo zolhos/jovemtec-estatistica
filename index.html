@@ -273,13 +273,18 @@
         </div>
       </div>
 
-      <!-- LIVE POLL COLLECTION CARD WITH CLICKABLE BUTTON & SCANNABLE QR CODE -->
-      <div class="glass-card p-5 rounded-xl border border-violet-500/30">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4">
+      <!-- COMPLETE MULTI-QUESTION LIVE POLL CARD -->
+      <div class="glass-card p-5 rounded-xl border border-violet-500/40 shadow-xl">
+        
+        <!-- CARD TOP HEADER -->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800">
           <div class="flex-grow">
-            <span class="badge-live text-xs font-mono uppercase text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30 font-semibold">● Pesquisa de Campo ao Vivo</span>
-            <h3 class="text-base font-bold text-slate-100 mt-1">Coleta de Dados da Turma</h3>
-            <p class="text-xs text-slate-400 mb-3">Responda ao formulário no celular para gerarmos o gráfico da sala ao vivo!</p>
+            <div class="flex items-center gap-2">
+              <span class="badge-live text-xs font-mono uppercase text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/30 font-semibold">● Pesquisa de Campo ao Vivo</span>
+              <span class="text-xs font-mono text-slate-400">6 Questões Cadastradas</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-50 mt-1">📊 Painel Interativo de Dados da Turma</h3>
+            <p class="text-xs text-slate-400 mb-3">Responda ao formulário e navegue pelas abas para visualizar os gráficos de cada pergunta:</p>
 
             <!-- DIRECT CLICKABLE BUTTON FOR STUDENTS -->
             <a href="https://docs.google.com/forms/d/e/1FAIpQLSfoBYJ16THQS-AINisLG3F7_Tjv8VNPYO-t9LQRhgtm5WelFA/viewform?usp=dialog" 
@@ -301,18 +306,59 @@
           </div>
         </div>
 
-        <div class="flex flex-wrap gap-2 mb-4 pt-3 border-t border-slate-800">
-          <button id="fetch-live-data-btn" class="px-3.5 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-md transition-all flex items-center gap-1.5">
-            🔄 Baixar Respostas da Sala (Google Sheets)
-          </button>
-          <button id="load-sample-data-btn" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition-all">
-            📊 Carregar Dados Exemplo (IBGE)
-          </button>
+        <!-- CONTROLS & FETCH BUTTON -->
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <div class="flex flex-wrap gap-2">
+            <button id="fetch-live-data-btn" class="px-3.5 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white text-xs font-semibold shadow-md transition-all flex items-center gap-1.5">
+              🔄 Baixar Respostas (Google Sheets)
+            </button>
+            <button id="load-sample-data-btn" class="px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition-all">
+              📊 Carregar Dados Exemplo (IBGE)
+            </button>
+          </div>
+          <div id="live-data-status" class="text-xs font-mono text-slate-400">ℹ️ Clique para carregar as respostas atualizadas.</div>
         </div>
 
-        <div id="live-data-status" class="text-xs font-mono text-slate-400 mb-3">ℹ️ Clique para carregar os dados atualizados.</div>
+        <!-- QUESTION SELECTOR TABS -->
+        <div class="mb-4">
+          <span class="text-[11px] font-mono text-slate-400 block mb-1.5 uppercase font-semibold">Selecione a Pergunta para Visualizar o Gráfico:</span>
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+            <button data-qtab="5" class="live-qtab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-600 text-white border border-violet-500 transition-all whitespace-nowrap">
+              ⏱️ Q5: Deslocamento (Contínua)
+            </button>
+            <button data-qtab="1" class="live-qtab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 transition-all whitespace-nowrap">
+              🚌 Q1: Transporte (Nominal)
+            </button>
+            <button data-qtab="2" class="live-qtab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 transition-all whitespace-nowrap">
+              💻 Q2: Área Técnica (Nominal)
+            </button>
+            <button data-qtab="3" class="live-qtab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 transition-all whitespace-nowrap">
+              🎓 Q3: Escolaridade (Ordinal)
+            </button>
+            <button data-qtab="4" class="live-qtab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 transition-all whitespace-nowrap">
+              🏠 Q4: Moradores (Discreta)
+            </button>
+            <button data-qtab="6" class="live-qtab-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 border border-slate-700 transition-all whitespace-nowrap">
+              📚 Q6: Livros Lidos (Discreta)
+            </button>
+          </div>
+        </div>
 
-        <div class="grid grid-cols-3 gap-2 mb-4 text-center">
+        <!-- SELECTED QUESTION HEADER & CLASSIFICATION INFO -->
+        <div class="p-3.5 rounded-xl bg-slate-950/80 border border-slate-800 mb-4">
+          <div class="flex items-center justify-between flex-wrap gap-2 mb-1">
+            <span id="live-q-title" class="text-xs font-bold text-violet-300 font-mono">Gráfico 1 • Histograma de Deslocamento Urbano</span>
+            <span id="live-q-badge" class="text-[10px] font-mono font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+              Quantitativa Contínua
+            </span>
+          </div>
+          <h4 id="live-q-statement" class="text-sm font-bold text-slate-100">
+            "Aproximadamente, quanto tempo (em minutos) você leva no seu deslocamento diário de ida/volta até a escola/curso?"
+          </h4>
+        </div>
+
+        <!-- STATS SUMMARY CARDS (DESLOCAMENTO ONLY / DYNAMIC) -->
+        <div id="live-stats-row" class="grid grid-cols-3 gap-2 mb-4 text-center">
           <div class="p-2 rounded bg-slate-900/60 border border-slate-800">
             <span class="text-[10px] text-slate-400 uppercase font-mono">Média (x̄)</span>
             <div id="live-mean-val" class="text-base font-bold text-emerald-400">-- min</div>
@@ -327,9 +373,11 @@
           </div>
         </div>
 
-        <div class="h-56 relative w-full">
+        <!-- CANVAS CONTAINER -->
+        <div class="h-64 relative w-full">
           <canvas id="liveClassChart"></canvas>
         </div>
+
       </div>
     </section>
 
