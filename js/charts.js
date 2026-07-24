@@ -12,6 +12,7 @@ const fallbackPollData = {
 let liveChartInstance = null;
 let outlierChartInstance = null;
 let equityChartInstance = null;
+let modeDataGlobal = { "Ônibus": 18, "A pé": 8, "Carro": 4, "Bicicleta": 2 };
 
 document.addEventListener('DOMContentLoaded', () => {
   initLiveClassChart();
@@ -45,7 +46,7 @@ function initLiveClassChart() {
 
 async function fetchLiveDataFromAppsScript() {
   const statusEl = document.getElementById('live-data-status');
-  if (statusEl) statusEl.textContent = '⏳ Baixando dados da sala...';
+  if (statusEl) statusEl.textContent = '⏳ Baixando dados da sala ao vivo...';
 
   try {
     if (!APPS_SCRIPT_URL || !APPS_SCRIPT_URL.startsWith("http")) {
@@ -55,23 +56,59 @@ async function fetchLiveDataFromAppsScript() {
     }
 
     const response = await fetch(APPS_SCRIPT_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const data = await response.json();
 
+    if (!Array.isArray(data) || data.length <= 1) {
+      if (statusEl) statusEl.textContent = '⚠️ Nenhuma resposta registrada no formulário ainda. Exibindo dados de exemplo.';
+      renderLiveChart(fallbackPollData.deslocamento);
+      return;
+    }
+
     const times = [];
+    const transportesCount = { "Ônibus": 0, "A pé": 0, "Carro": 0, "Bicicleta": 0 };
+
+    // Process rows starting from index 1 (skipping header)
     for (let i = 1; i < data.length; i++) {
-      const val = parseFloat(data[i][4] || data[i][5]);
-      if (!isNaN(val) && val > 0) times.push(val);
+      const row = data[i];
+      if (!row || row.length === 0) continue;
+
+      // Index 5: Deslocamento em minutos (Quantitativa Contínua)
+      const timeVal = parseFloat(row[5]);
+      if (!isNaN(timeVal) && timeVal > 0) {
+        times.push(timeVal);
+      }
+
+      // Index 1: Meio de Transporte (Qualitativa Nominal)
+      const transStr = String(row[1] || "");
+      if (transStr.includes("Ônibus") || transStr.includes("Público")) transportesCount["Ônibus"]++;
+      else if (transStr.includes("A pé")) transportesCount["A pé"]++;
+      else if (transStr.includes("Carro") || transStr.includes("Moto")) transportesCount["Carro"]++;
+      else if (transStr.includes("Bicicleta")) transportesCount["Bicicleta"]++;
     }
 
     if (times.length > 0) {
       renderLiveChart(times);
-      if (statusEl) statusEl.textContent = `✅ ${times.length} respostas coletadas da sala ao vivo!`;
+      const totalRespostas = data.length - 1;
+      if (statusEl) statusEl.textContent = `✅ ${totalRespostas} resposta(s) da sala ao vivo carregada(s) com sucesso!`;
+
+      // Sync transport answers to Mode simulator if present
+      if (Object.values(transportesCount).some(v => v > 0)) {
+        modeDataGlobal = { ...transportesCount };
+        if (typeof updateModeUI === 'function') {
+          updateModeUI();
+        }
+      }
     } else {
-      if (statusEl) statusEl.textContent = '⚠️ Nenhuma resposta numérica encontrada na planilha. Exibindo dados pré-carregados.';
+      if (statusEl) statusEl.textContent = '⚠️ Nenhuma resposta numérica válida encontrada na coluna 6. Exibindo dados de exemplo.';
       renderLiveChart(fallbackPollData.deslocamento);
     }
   } catch (err) {
-    if (statusEl) statusEl.textContent = '⚠️ Falha na conexão com a planilha. Exibindo dados de demonstração.';
+    console.error("Erro no Apps Script fetch:", err);
+    if (statusEl) statusEl.textContent = '⚠️ Falha na conexão com o Google Sheets. Exibindo dados de demonstração.';
     renderLiveChart(fallbackPollData.deslocamento);
   }
 }
@@ -368,54 +405,52 @@ function initMedianSimulator() {
 }
 
 /* 6. Interactive Mode & Frequency Builder (Bloco 2) */
+function updateModeUI() {
+  const onibusEl = document.getElementById('mode-count-onibus');
+  const apeEl = document.getElementById('mode-count-ape');
+  const carroEl = document.getElementById('mode-count-carro');
+  const bikeEl = document.getElementById('mode-count-bike');
+  const resultEl = document.getElementById('mode-result-display');
+  const badgeEl = document.getElementById('mode-type-badge');
+
+  if (!onibusEl || !resultEl) return;
+
+  onibusEl.textContent = modeDataGlobal["Ônibus"];
+  apeEl.textContent = modeDataGlobal["A排"] || modeDataGlobal["A pé"];
+  carroEl.textContent = modeDataGlobal["Carro"];
+  bikeEl.textContent = modeDataGlobal["Bicicleta"];
+
+  const maxFreq = Math.max(...Object.values(modeDataGlobal));
+  const modes = Object.keys(modeDataGlobal).filter(key => modeDataGlobal[key] === maxFreq && maxFreq > 0);
+
+  if (maxFreq === 0) {
+    badgeEl.textContent = 'Amodal';
+    badgeEl.className = 'text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded';
+    resultEl.textContent = 'Nenhuma resposta inserida (Amodal)';
+  } else if (modes.length === 1) {
+    badgeEl.textContent = 'Unimodal';
+    badgeEl.className = 'text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30';
+    resultEl.textContent = `🏆 ${modes[0]} (${maxFreq} votos)`;
+  } else if (modes.length > 1 && modes.length < Object.keys(modeDataGlobal).length) {
+    badgeEl.textContent = `Bimodal (${modes.length} Modas)`;
+    badgeEl.className = 'text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30';
+    resultEl.textContent = `🏆 Empate: ${modes.join(' e ')} (${maxFreq} votos cada)`;
+  } else {
+    badgeEl.textContent = 'Amodal (Empate Geral)';
+    badgeEl.className = 'text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded';
+    resultEl.textContent = `Todos os itens têm a mesma frequência (${maxFreq} votos)`;
+  }
+}
+
 function initModeSimulator() {
-  const modeData = { "Ônibus": 18, "A pé": 8, "Carro": 4, "Bicicleta": 2 };
-
-  const updateModeUI = () => {
-    const onibusEl = document.getElementById('mode-count-onibus');
-    const apeEl = document.getElementById('mode-count-ape');
-    const carroEl = document.getElementById('mode-count-carro');
-    const bikeEl = document.getElementById('mode-count-bike');
-    const resultEl = document.getElementById('mode-result-display');
-    const badgeEl = document.getElementById('mode-type-badge');
-
-    if (!onibusEl || !resultEl) return;
-
-    onibusEl.textContent = modeData["Ônibus"];
-    apeEl.textContent = modeData["A pé"];
-    carroEl.textContent = modeData["Carro"];
-    bikeEl.textContent = modeData["Bicicleta"];
-
-    const maxFreq = Math.max(...Object.values(modeData));
-    const modes = Object.keys(modeData).filter(key => modeData[key] === maxFreq && maxFreq > 0);
-
-    if (maxFreq === 0) {
-      badgeEl.textContent = 'Amodal';
-      badgeEl.className = 'text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded';
-      resultEl.textContent = 'Nenhuma resposta inserida (Amodal)';
-    } else if (modes.length === 1) {
-      badgeEl.textContent = 'Unimodal';
-      badgeEl.className = 'text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30';
-      resultEl.textContent = `🏆 ${modes[0]} (${maxFreq} votos)`;
-    } else if (modes.length > 1 && modes.length < Object.keys(modeData).length) {
-      badgeEl.textContent = `Bimodal (${modes.length} Modas)`;
-      badgeEl.className = 'text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30';
-      resultEl.textContent = `🏆 Empate: ${modes.join(' e ')} (${maxFreq} votos cada)`;
-    } else {
-      badgeEl.textContent = 'Amodal (Empate Geral)';
-      badgeEl.className = 'text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded';
-      resultEl.textContent = `Todos os itens têm a mesma frequência (${maxFreq} votos)`;
-    }
-  };
-
   const incBtns = document.querySelectorAll('.mode-inc-btn');
   const decBtns = document.querySelectorAll('.mode-dec-btn');
 
   incBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       const item = e.currentTarget.getAttribute('data-item');
-      if (item && modeData[item] !== undefined) {
-        modeData[item]++;
+      if (item && modeDataGlobal[item] !== undefined) {
+        modeDataGlobal[item]++;
         updateModeUI();
       }
     });
@@ -424,8 +459,8 @@ function initModeSimulator() {
   decBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       const item = e.currentTarget.getAttribute('data-item');
-      if (item && modeData[item] !== undefined && modeData[item] > 0) {
-        modeData[item]--;
+      if (item && modeDataGlobal[item] !== undefined && modeDataGlobal[item] > 0) {
+        modeDataGlobal[item]--;
         updateModeUI();
       }
     });
