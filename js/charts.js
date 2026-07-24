@@ -366,7 +366,7 @@ function renderOutlierChart(mean, median, richSalary) {
   });
 }
 
-/* 3. Equity Allocation & Standard Deviation Simulator (Bloco 3) */
+/* 3. Equity Allocation & Standard Deviation Simulator (Bloco 3) - Updated to R$ 600,00 per student */
 function initEquitySimulator() {
   const sliders = [
     document.getElementById('fund-bairro-a'),
@@ -388,7 +388,7 @@ function initEquitySimulator() {
     const funds = sliders.map((s, idx) => {
       const val = parseFloat(s.value);
       if (valLabels[idx]) {
-        valLabels[idx].textContent = val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        valLabels[idx].textContent = `${val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} / aluno`;
       }
       return val;
     });
@@ -398,14 +398,14 @@ function initEquitySimulator() {
     const variance = funds.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / 4;
     const stdDev = Math.sqrt(variance);
 
-    document.getElementById('equity-mean-val').textContent = mean.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    document.getElementById('equity-std-val').textContent = stdDev.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    document.getElementById('equity-mean-val').textContent = `${mean.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} / aluno`;
+    document.getElementById('equity-std-val').textContent = `${stdDev.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
 
     const statusBadge = document.getElementById('equity-status-badge');
-    if (stdDev < 50000) {
+    if (stdDev < 50) {
       statusBadge.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
       statusBadge.textContent = '🟢 Alta Equidade (Baixo Desvio Padrão)';
-    } else if (stdDev < 250000) {
+    } else if (stdDev < 200) {
       statusBadge.className = 'px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30';
       statusBadge.textContent = '🟡 Desigualdade Moderada';
     } else {
@@ -431,7 +431,7 @@ function renderEquityChart(funds) {
     data: {
       labels: ['Escola Bairro A', 'Escola Bairro B', 'Escola Bairro C', 'Escola Bairro D'],
       datasets: [{
-        label: 'Investimento (R$)',
+        label: 'Investimento por Aluno (R$)',
         data: funds,
         backgroundColor: ['#8B5CF6', '#34D399', '#FBBF24', '#EC4899'],
         borderRadius: 8

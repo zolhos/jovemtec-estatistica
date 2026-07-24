@@ -842,7 +842,7 @@
         <span class="text-xs font-mono uppercase text-amber-400 font-bold tracking-wide">💡 Provocação Inicial:</span>
         <blockquote class="text-sm text-slate-200 italic mt-1 leading-relaxed">
           "Imaginem duas regiões da Região Metropolitana de Campinas com o mesmo investimento médio por aluno na rede pública: $\text{R}\$\, 600,00$.<br>
-          Na Região A, todas as escolas recebem entre $\text{R}\$\, 580,00$ e $\text{R}\$\, 620,00$. Na Região B, uma escola central recebe $\text{R}\$\, 1.500,00$ e quatro periféricas recebem apenas $\text{R}\$\, 375,00$. A média é idêntica, mas a <strong>equidade</strong> é oposta. É aqui que entram as Medidas de Dispersão."
+          Na Região A, todas as escolas recebem entre $\text{R}\$\, 580,00$ e $\text{R}\$\, 620,00$. Na Região B, uma escola central recebe $\text{R}\$\, 1.500,00$ por aluno, enquanto quatro escolas periféricas recebem apenas $\text{R}\$\, 375,00$. A média é idêntica, mas a <strong>equidade</strong> é oposta. É aqui que entram as Medidas de Dispersão."
         </blockquote>
       </div>
 
@@ -925,12 +925,12 @@
         </div>
       </div>
 
-      <!-- SIMULATOR: PUBLIC ALLOCATION & EQUITY (STD DEV) -->
+      <!-- SIMULATOR: PUBLIC ALLOCATION & EQUITY (STD DEV) - UPDATED TO R$ 600,00 PER STUDENT -->
       <div class="glass-card p-5 rounded-xl border border-emerald-500/30 mb-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
           <div>
             <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">🏛️ Simulador: Alocação de Verbas & Equidade ($\sigma$)</h3>
-            <p class="text-xs text-slate-400">Ajuste o orçamento de 4 escolas de Campinas/RMC e observe os valores e o Desvio Padrão ($\sigma$):</p>
+            <p class="text-xs text-slate-400">Ajuste o investimento por aluno (em R$) de 4 escolas de Campinas/RMC e observe a variação do Desvio Padrão ($\sigma$):</p>
           </div>
           <div id="equity-status-badge" class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
             🟢 Alta Equidade
@@ -941,37 +941,37 @@
           <div>
             <label class="text-[11px] text-slate-300 flex justify-between">
               <span>Escola Bairro A:</span>
-              <span id="fund-val-a" class="font-mono text-violet-400 font-bold">R$ 600.000,00</span>
+              <span id="fund-val-a" class="font-mono text-violet-400 font-bold">R$ 600,00 / aluno</span>
             </label>
-            <input id="fund-bairro-a" type="range" min="100000" max="1500000" step="50000" value="600000" class="w-full h-2 bg-slate-800 rounded">
+            <input id="fund-bairro-a" type="range" min="100" max="1500" step="25" value="600" class="w-full h-2 bg-slate-800 rounded">
           </div>
           <div>
             <label class="text-[11px] text-slate-300 flex justify-between">
               <span>Escola Bairro B:</span>
-              <span id="fund-val-b" class="font-mono text-emerald-400 font-bold">R$ 600.000,00</span>
+              <span id="fund-val-b" class="font-mono text-emerald-400 font-bold">R$ 600,00 / aluno</span>
             </label>
-            <input id="fund-bairro-b" type="range" min="100000" max="1500000" step="50000" value="600000" class="w-full h-2 bg-slate-800 rounded">
+            <input id="fund-bairro-b" type="range" min="100" max="1500" step="25" value="600" class="w-full h-2 bg-slate-800 rounded">
           </div>
           <div>
             <label class="text-[11px] text-slate-300 flex justify-between">
               <span>Escola Bairro C:</span>
-              <span id="fund-val-c" class="font-mono text-amber-400 font-bold">R$ 600.000,00</span>
+              <span id="fund-val-c" class="font-mono text-amber-400 font-bold">R$ 600,00 / aluno</span>
             </label>
-            <input id="fund-bairro-c" type="range" min="100000" max="1500000" step="50000" value="600000" class="w-full h-2 bg-slate-800 rounded">
+            <input id="fund-bairro-c" type="range" min="100" max="1500" step="25" value="600" class="w-full h-2 bg-slate-800 rounded">
           </div>
           <div>
             <label class="text-[11px] text-slate-300 flex justify-between">
               <span>Escola Bairro D:</span>
-              <span id="fund-val-d" class="font-mono text-rose-400 font-bold">R$ 600.000,00</span>
+              <span id="fund-val-d" class="font-mono text-rose-400 font-bold">R$ 600,00 / aluno</span>
             </label>
-            <input id="fund-bairro-d" type="range" min="100000" max="1500000" step="50000" value="600000" class="w-full h-2 bg-slate-800 rounded">
+            <input id="fund-bairro-d" type="range" min="100" max="1500" step="25" value="600" class="w-full h-2 bg-slate-800 rounded">
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 mb-4 text-center">
           <div class="p-2.5 rounded-lg bg-slate-900/80 border border-slate-700">
-            <span class="text-[10px] text-slate-400 font-mono uppercase">Média Aritmética (x̄)</span>
-            <div id="equity-mean-val" class="text-sm font-bold text-slate-200">R$ 600.000,00</div>
+            <span class="text-[10px] text-slate-400 font-mono uppercase">Média Por Aluno (x̄)</span>
+            <div id="equity-mean-val" class="text-sm font-bold text-slate-200">R$ 600,00 / aluno</div>
           </div>
           <div class="p-2.5 rounded-lg bg-slate-900/80 border border-violet-500/30">
             <span class="text-[10px] text-slate-400 font-mono uppercase">Desvio Padrão (σ)</span>
